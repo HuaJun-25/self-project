@@ -1,0 +1,114 @@
+@charset "UTF-8";
+* {
+  box-sizing: border-box;
+  /* 不累加內距及邊框，RWD一定要寫的 */
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, Arial, "蘋方-繁", "PingFang TC", "黑體-繁", "Heiti TC", "微軟正黑體", "Microsoft JhengHei", sans-serif;
+  font-size: 100%;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
+a {
+  display: block;
+  color: #666;
+  text-decoration: none;
+  transition: 0.45s;
+}
+
+/* reset end */
+.hero {
+  scroll-behavior: none;
+}
+.hero ::-webkit-scrollbar {
+  display: none;
+}
+.hero img {
+  width: 100%;
+  height: 100vh;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.hero .hero-text {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  width: 100%;
+  z-index: 2;
+}
+.hero .hero-text .letters {
+  flex: 1;
+  display: flex;
+  text-transform: uppercase;
+}
+.hero .hero-text .letters > div {
+  flex: 1;
+  font-size: 16vw;
+  font-weight: 400;
+  color: #d51e49;
+  text-align: center;
+  position: relative;
+}
+.hero .hero-bg .hero-content {
+  position: relative;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+}
+.hero .hero-bg .hero-content .hero-img {
+  position: relative;
+  display: block;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background: #fff;
+  clip-path: polygon(37.5% 20%, 62.5% 20%, 62.5% 80%, 37.5% 80%);
+}
+.hero .hero-bg .hero-content .hero-img img {
+  position: relative;
+  display: block;
+  transform: scale(2);
+}
+
+.content-holder {
+  padding: 100px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 1;
+  /* 可以再加 fade-in 動畫 */
+  height: 100vh;
+}/*# sourceMappingURL=home.css.map */
