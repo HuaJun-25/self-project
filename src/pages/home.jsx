@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Draggable } from "gsap/Draggable";
+import { CustomEase } from "gsap/CustomEase";
 import Lenis from "@studio-freight/lenis";
 import { FaArrowRight } from "react-icons/fa6";
 import '../scss/home.scss';
@@ -14,7 +15,10 @@ import item4 from '../images/item04.avif';
 import process1 from '../images/process01.avif';
 import process2 from '../images/process02.avif';
 
-gsap.registerPlugin(Draggable, ScrollTrigger);
+gsap.registerPlugin(Draggable, ScrollTrigger, CustomEase);
+CustomEase.create("projectExpand", "0.25, 0.1, 0.25, 1.05");
+CustomEase.create("projectCollapse", "0.36, 0.07, 0.19, 0.97");
+CustomEase.create("textReveal", "0.25, 1, 0.5, 1");
 
 // works-照片
 const worksimgs = [
@@ -202,46 +206,93 @@ const Home = () => {
     }, []);
 
     // item區 ---------------------------------------
-    const [itemimgs, setItemimgs] = useState([...itemsimgs]);
-    const [fadeIn, setFadeIn] = useState(true);
-    const itemcontainerRef = useRef(null);
-    const [itemselectedIndex, setItemselectedIndex] = useState(0);
-    // 淡入淡出效果
-    useEffect(() => {
-        setFadeIn(false); // 先重置
-        const timer = setTimeout(() => setFadeIn(true), 50); // 小延遲觸發 transition
-        return () => clearTimeout(timer);
-    }, [itemimgs]);
-    // 箭頭切換
-    const sliderforward = () => {
-        setItemimgs((prevArr) => {
-            const newArr = [...prevArr];
-            const first = newArr.shift();
-            newArr.push(first);
-            return newArr;
-        });
-        setItemselectedIndex(0); // 因為移到最前面就是新 selimg
-    };
-    // 圖片切換
-    const moveToFront = (index) => {
-        setItemimgs((prevArr) => {
-            const head = prevArr.slice(0, index);
-            const tail = prevArr.slice(index);
-            return [...tail, ...head];
-        });
-        setItemselectedIndex(0); // 每次 forward 之後，第一個一定是 selimg
-    };
-    // 切換圖的gsap
-    useEffect(() => {
-        const sel = itemcontainerRef.current.querySelector(".item-selimg");
-        if (sel) {
-            gsap.fromTo(
-                sel,
-                { scale: 0.6, x: -150, y: 100 }, // 起始狀態 (像 nonsel)
-                { scale: 1, x: 0, y: 0, duration: 0.8, ease: "power2.inOut" } // 目標狀態
-            );
+    const [openItem, setOpenItem] = useState(null);       // 目標要開的項目
+    const [renderedItem, setRenderedItem] = useState(null); // DOM 實際渲染的項目
+    const [isAnimating, setIsAnimating] = useState(false); // 防止動畫重疊
+    const containerRefs = useRef({});
+    const textRefs = useRef({});
+    const handleClick = (id) => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+
+        if (openItem === id) { // 點同一個 → 收起
+            animateClose(id, () => {
+                setOpenItem(null);
+                setIsAnimating(false);
+            });
+        } else if (openItem) { // 點其他 → 先關掉舊的再開新
+            animateClose(openItem, () => {
+                setOpenItem(id);
+                setRenderedItem(id); // 立即掛上 DOM
+            });
+        } else {  // 沒開啟的 → 直接打開
+            setOpenItem(id);
+            setRenderedItem(id); // 立即掛上 DOM
         }
-    }, [itemimgs]);
+    };
+    const animateClose = (id, callback) => {
+        const el = containerRefs.current[id];
+        if (!el) {
+            if (callback) callback();
+            return;
+        }
+        gsap.to(el, {
+            height: 0,
+            opacity: 0,
+            duration: 0.5,
+            ease: "projectCollapse",
+            onComplete: () => {
+                setRenderedItem(null); // 移除 DOM
+                if (callback) callback();
+            },
+        });
+    };
+    const handleClickOutside = (e) => {
+        if (!e.target.closest(".item") && openItem) {
+            setIsAnimating(true);
+            animateClose(openItem, () => {
+                setOpenItem(null);
+                setIsAnimating(false);
+            });
+        }
+    };
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, [openItem]);
+
+    // 當 DOM 渲染完成後再執行開啟動畫
+    useEffect(() => {
+        if (renderedItem) {
+            const el = containerRefs.current[renderedItem];
+            if (!el) return;
+
+            gsap.fromTo(
+                el,
+                { height: 0, opacity: 0 },
+                { height: "auto", opacity: 1, duration: 0.6, ease: "projectExpand" }
+            );
+
+            const texts = textRefs.current[renderedItem]?.querySelectorAll(".reveal-text");
+            if (texts) {
+                gsap.fromTo(
+                    texts,
+                    { y: 20, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        stagger: 0.1,
+                        duration: 0.6,
+                        ease: "textReveal",
+                        delay: 0.2,
+                        onComplete: () => setIsAnimating(false), // 動畫結束可再次點擊
+                    }
+                );
+            } else {
+                setIsAnimating(false);
+            }
+        }
+    }, [renderedItem]);
 
     // process區 ---------------------------------------
     const processRef = useRef(null);
@@ -339,6 +390,33 @@ const Home = () => {
         }
     };
 
+    // contect區 ---------------------------------------
+    const formRef = useRef(null);
+    const textareaRef = useRef(null);
+
+    const handleCopy = () => {
+        const formEl = formRef.current;
+        if (!formEl) return;
+
+        const items = formEl.querySelectorAll(".contact-list");
+        const lines = [];
+
+        items.forEach((li) => {
+            const label = li.querySelector(".contact-text p")?.innerText || "";
+            const input = li.querySelector("input, textarea");
+            const value = input?.value || "";
+            lines.push(`${label}: ${value}`);
+        });
+
+        const textToCopy = lines.join("\n");
+
+        // 使用隱藏 textarea 複製
+        const textarea = textareaRef.current;
+        textarea.value = textToCopy;
+        textarea.select();
+        document.execCommand("copy");
+        alert("表單資料已複製到剪貼簿！");
+    };
 
     return (
         <>
@@ -380,29 +458,44 @@ const Home = () => {
 
             {/* item */}
             <div className="itemsinner">
-                <div className="item-title"><h3><span>I</span>TEM</h3></div>
-                <div className='item-wrap' ref={itemcontainerRef}>
-                    <div className='item-card'>
-                        {itemimgs.map((item, index) => {
-                            return (
-                                <div key={item.id}
-                                    className={(index === 0) ? `item-selimg ${fadeIn ? 'fadein' : ''}` : 'item-nonsel'} onClick={() => moveToFront(index)}>
-                                    <img className='item-img' src={item.ImgSrc} draggable="false" />
-                                </div>)
-                        })}
-                    </div>
-                    {itemimgs.length > 0 && (
-                        <div className='item-txt'>
-                            <h3>{itemimgs[itemselectedIndex].title}</h3>
-                            <p>{itemimgs[itemselectedIndex].desc}</p>
-                        </div>)}
-                    <FaArrowRight className='item-arrow' onClick={sliderforward} />
-                </div>
+                <div className="items-title" >
+                    <h3>ITEMS</h3></div>
+                <div className="itemwrapper">
+                    {itemsimgs.map((item) => (
+                        <div key={item.id} className="item-wrap" onClick={(e) => {
+                            e.stopPropagation();
+                            handleClick(item.id);
+                        }} >
+                            <div className="item-title">
+                                {item.title}
+                            </div>
+                            {renderedItem === item.id && (
+                                <div className="item-content"
+                                    ref={(el) => (containerRefs.current[item.id] = el)} >
+                                    <div
+                                        className="item-contentwrap"
+                                        ref={(el) => (textRefs.current[item.id] = el)} >
+                                        <div className="item-desc" style={{ flex: 1 }}>
+                                            <p>{item.desc}</p>
+                                        </div>
+                                        <div className="item-img" style={{ flex: 1 }}>
+                                            <img src={item.ImgSrc} alt="" style={{ width: "100%" }} />
+                                        </div>
+                                        <div className="item-price" style={{ flex: 1 }}>
+                                            <p>{item.title}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}</div>
             </div>
+
 
             {/* process */}
             <div className="processinner">
-                <div className="process-title"><h3><span>P</span>ROCESS</h3></div>
+                <div className="process-title" >
+                    <h3>PROCESS</h3></div>
                 <div className="process-wrap" ref={processRef}>
                     <div className="process-left">
                         <div className="process-text">
@@ -453,21 +546,23 @@ const Home = () => {
                         <img src={item1} alt="image" />
                         <img src={item4} alt="image" />
                     </div>
-                    <div className="notice-title">
-                        <h3><span>N</span>OTICE</h3>
-                        <p className="notice-text">
-                            - 不接：官方禁止委託之作品、古風、真人<br/>
-                            - 如需標註 mili/咪哩 都可以<br/>
-                            - 超過付款期限(3日)視同取消委託<br/>
-                            - 工期約為確認匯款後2個月(依實際告知為準)<br/>
-                            - 有修改需求可能會依複雜度延後交稿日期(會事先告知)<br/>
-                            - 交稿日期有變更會事先告知，甲方不同意將會全額退費<br/>
-                            - 未提前告知延期的逾期行為將會全額退費<br/>
-                            - 預計完稿日未包含完稿後確認修改時間<br/>
-                            - 作品會上水印公開，禁止AI商用<br/>
-                            - 圖可依頭貼或排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br/>
+                    <div className="notice-text">
+                        <div className="notice-title" >
+                            <h3>NOTICE</h3>
+                        </div>
+                        <p>
+                            - 不接：官方禁止委託之作品、古風、真人<br />
+                            {/* - 如需標註 mili/咪哩 都可以<br /> */}
+                            - 超過付款期限(3日)視同取消委託<br />
+                            - 工期約為確認匯款後2個月(依實際告知為準)<br />
+                            - 有修改需求可能會依複雜度延後交稿日期(會事先告知)<br />
+                            - 交稿日期有變更會事先告知，甲方不同意將會全額退費<br />
+                            - 未提前告知延期的逾期行為將會全額退費<br />
+                            - 預計完稿日未包含完稿後確認修改時間<br />
+                            - 作品會上水印公開，禁止AI商用<br />
+                            - 圖可依頭貼或排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br />
                             {/* - 金額大於3000可先匯訂金1000<br/> */}
-                            </p>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -475,10 +570,67 @@ const Home = () => {
             {/* contact */}
             <div className="contactinner">
                 <div className="contact-wrap">
+                    <div className="contact-pic">
 
+                    </div>
+                    <div className="contact-desc">
+                        <div className="contact-title" >
+                            <h3>CONTACT</h3>
+                        </div>
+                        <p>- 依需求評估報價，都確認沒問題後才會進行排單<br />
+                            {/* - 報價後不進行委託可以直接說沒問題👌<br /> */}
+                            - 比較常在半夜回覆，有不想被打擾的可事先告知<br />
+                            - 排單順序以提供完整委託資料時間為準<br />
+                            - 個人因素報價所需時間較長(非常不好意思🙇)</p></div>
+                    <form className="contact-form" ref={formRef}>
+                        <ul className="contact-lists">
+                            <li className="contact-list">
+                                <div className="contact-text"><p>稱呼</p></div>
+                                <div className="contact-inputs">
+                                    <input type="text" size={40} />
+                                </div>
+                            </li>
+                            <li className="contact-list">
+                                <div className="contact-text"><p>項目</p></div>
+                                <div className="contact-inputs">
+                                    <input type="text" size={40} />
+                                </div>
+                            </li>
+                            <li className="contact-list">
+                                <div className="contact-text"><p>是否為驚喜包</p></div>
+                                <div className="contact-inputs">
+                                    <input type="text" size={40} placeholder="Y/N" />
+                                </div>
+                            </li>
+                            <li className="contact-list">
+                                <div className="contact-text"><p>人物設定</p></div>
+                                <div className="contact-inputs">
+                                    <input type="text" size={40} />
+                                </div>
+                            </li>
+                            <li className="contact-list">
+                                <div className="contact-text"><p>服裝設定</p></div>
+                                <div className="contact-inputs">
+                                    <input type="text" size={40} />
+                                </div>
+                            </li>
+                            <li className="contact-list">
+                                <div className="contact-text"><p>其他詳細需求</p></div>
+                                <div className="contact-inputs">
+                                    <textarea type="text" rows={10} cols={40} />
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                    <button onClick={handleCopy}>一鍵複製表單</button>
+
+      {/* 隱藏 textarea 用於複製 */}
+      <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
                 </div>
 
             </div>
+
+            <footer> </footer>
         </>
     );
 }
