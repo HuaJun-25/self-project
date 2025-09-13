@@ -22,13 +22,13 @@ CustomEase.create("textReveal", "0.25, 1, 0.5, 1");
 
 // works-照片
 const worksimgs = [
-    "https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=838&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1754079132758-5dfb65298934?q=80&w=2196&auto=format&fit=crop",
-    "https://plus.unsplash.com/premium_photo-1755804993716-a3f19e419eaf?q=80&w=1740&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1756573187428-48ffc9557eb4?q=80&w=774&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1754172111686-89a5782b18c6?q=80&w=774&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1756680967556-26861e2c836b?q=80&w=774&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1756768937629-febe4bf15fcf?q=80&w=1742&auto=format&fit=crop",
+    "https://images.plurk.com/228G6ulq0CfXhrY8DaGWDE.jpg",
+    "https://images.plurk.com/5AeDelBnGDeJx916XOZSt0.jpg",
+    'https://images.plurk.com/595IlwszYWBY0DnRah1EW8.jpg',
+    "https://images.plurk.com/1PmIQzcHGyAoaMN3KyO0Oy.jpg",
+    "https://images.plurk.com/3sVMZS4iMpwdOvj3h0sYZQ.jpg",
+    "https://images.plurk.com/7E4DdiJ77oBorI0IV6stVg.jpg",
+    "https://images.plurk.com/7iGOOgSj9HinG94t4aAmMA.jpg",
 ];
 // item-照片
 const itemsimgs = [
@@ -260,9 +260,7 @@ const Home = () => {
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, [openItem]);
-
-    // 當 DOM 渲染完成後再執行開啟動畫
-    useEffect(() => {
+    useEffect(() => { // 當 DOM 渲染完成後再執行開啟動畫
         if (renderedItem) {
             const el = containerRefs.current[renderedItem];
             if (!el) return;
@@ -293,6 +291,45 @@ const Home = () => {
             }
         }
     }, [renderedItem]);
+    const [show, setShow] = useState(false); //item-鼠標
+    const [hoverItem, setHoverItem] = useState(); // 取當前hover的item
+    const [activeItemId, setActiveItemId] = useState(null); // 當前開啟的項目
+    const itemimgRef = useRef(null);
+    useLayoutEffect(() => {
+        if (!itemimgRef.current) return;
+
+        const ctx = gsap.context(() => {
+            if (show) {
+                gsap.to(itemimgRef.current, {
+                    autoAlpha: 1,
+                    scale: 1,
+                    duration: 0.6,
+                    ease: "projectExpand",
+                });
+            } else {
+                gsap.to(itemimgRef.current, {
+                    autoAlpha: 0,
+                    scale: 0.8,
+                    duration: 0.4,
+                    ease: "projectCollapse",
+                });
+            }
+        });
+
+        return () => ctx.revert();
+    }, [show]);
+
+    const itemMouseMove = (e) => { // 滑鼠
+        if (itemimgRef.current) {
+            gsap.to(itemimgRef.current, {
+                x: e.clientX + 20,
+                y: e.clientY + 20,
+                duration: 0.4,
+                ease: "power3.out",
+            });
+        }
+    };
+
 
     // process區 ---------------------------------------
     const processRef = useRef(null);
@@ -462,13 +499,45 @@ const Home = () => {
                     <h3>ITEMS</h3></div>
                 <div className="itemwrapper">
                     {itemsimgs.map((item) => (
-                        <div key={item.id} className="item-wrap" onClick={(e) => {
-                            e.stopPropagation();
-                            handleClick(item.id);
-                        }} >
+                        <div key={item.id} className="item-wrap"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClick(item.id);
+                                if (activeItemId === item.id) {
+                                    setActiveItemId(null);      // 再次點擊已開啟 → 關閉
+                                } else {
+                                    setActiveItemId(item.id);   // 開啟新項目
+                                }
+                            }}
+                            onMouseMove={itemMouseMove}
+                            onMouseEnter={() => {
+                                if (activeItemId !== item.id) {
+                                    setHoverItem(item);
+                                    setShow(true);
+                                }
+                            }}
+                            onMouseLeave={() => setShow(false)}
+                        >
                             <div className="item-title">
-                                {item.title}
+                               <p>{item.title}</p>
                             </div>
+                            <img
+                                ref={itemimgRef}
+                                src={hoverItem?.ImgSrc}
+                                alt={item.title}
+                                className="item-img-follow"
+                                style={{
+                                    position: "fixed",
+                                    width: "180px",
+                                    pointerEvents: "none",
+                                    top: '-100px',
+                                    left: '-20%',
+                                    height: 'auto',
+                                    // zIndex: 2,
+                                    opacity: 0,      // 預設透明
+                                    transform: "scale(0.8)", // 預設縮小
+                                }}
+                            />
                             {renderedItem === item.id && (
                                 <div className="item-content"
                                     ref={(el) => (containerRefs.current[item.id] = el)} >
@@ -479,7 +548,7 @@ const Home = () => {
                                             <p>{item.desc}</p>
                                         </div>
                                         <div className="item-img" style={{ flex: 1 }}>
-                                            <img src={item.ImgSrc} alt="" style={{ width: "100%" }} />
+                                            <img src={item.ImgSrc} alt="" />
                                         </div>
                                         <div className="item-price" style={{ flex: 1 }}>
                                             <p>{item.title}</p>
@@ -490,7 +559,6 @@ const Home = () => {
                         </div>
                     ))}</div>
             </div>
-
 
             {/* process */}
             <div className="processinner">
@@ -560,7 +628,7 @@ const Home = () => {
                             - 未提前告知延期的逾期行為將會全額退費<br />
                             - 預計完稿日未包含完稿後確認修改時間<br />
                             - 作品會上水印公開，禁止AI商用<br />
-                            - 圖可依頭貼或排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br />
+                            - 圖可依排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br />
                             {/* - 金額大於3000可先匯訂金1000<br/> */}
                         </p>
                     </div>
@@ -624,8 +692,8 @@ const Home = () => {
                     </form>
                     <button onClick={handleCopy}>一鍵複製表單</button>
 
-      {/* 隱藏 textarea 用於複製 */}
-      <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
+                    {/* 隱藏 textarea 用於複製 */}
+                    <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
                 </div>
 
             </div>

@@ -160,25 +160,27 @@ body {
                 font-weight: 700;
                 margin: 0.5rem 0;
                 cursor: pointer;
-            }
+                
+ }
 
             .item-content {
                 overflow: hidden;
                 padding: 0 3rem;
                 pointer-events: none;
                 transform-style: preserve-3d;
-                
+
                 .item-contentwrap {
                     display: flex;
                     flex: 1;
                     padding: 20px 60px;
                     height: 100%; // 給h才會垂直置中
                     align-items: center;
-                    
+
                     @media (max-width: 820px) {
                         flex-direction: column;
                         gap: 20px;
                     }
+
                     .item-desc {
                         p {
                             text-align: start;
