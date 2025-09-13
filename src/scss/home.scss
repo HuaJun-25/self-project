@@ -1,9 +1,6 @@
 @use "reset";
 
-// @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&family=Shippori+Mincho+B1:wght@400;500;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
 * {
     user-select: none;
     //border: 1px solid red;
@@ -20,8 +17,8 @@
 }
 
 body {
-    // font-family: "Zen Maru Gothic", sans-serif;
-    font-family: "Shippori Mincho B1", serif;
+
+    font-family: "Zen Kaku Gothic New", sans-serif;
     font-weight: 500;
 }
 
@@ -54,10 +51,10 @@ body {
                 flex: 1;
                 font-size: 10vw;
                 font-weight: 400;
-                color: #f14e71;
+                color: #212121;
                 text-align: center;
                 position: relative;
-                font-family: "Lexend Giga", sans-serif;
+                font-family: "EB Garamond", serif;
             }
         }
     }
@@ -136,7 +133,7 @@ body {
         z-index: 3;
         left: 10px;
         font-size: 2.5rem;
-        font-family: "Lexend Giga", sans-serif;
+        font-family: "EB Garamond", serif;
     }
 
     .itemwrapper {
@@ -150,7 +147,7 @@ body {
 
         .item-wrap {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
             text-align: center;
             width: 100%;
 
@@ -160,8 +157,13 @@ body {
                 font-weight: 700;
                 margin: 0.5rem 0;
                 cursor: pointer;
-                
- }
+                transition: letter-spacing 0.5s ease;
+
+                &:hover {
+                    letter-spacing:0.8vw;
+                }
+
+            }
 
             .item-content {
                 overflow: hidden;
@@ -221,15 +223,6 @@ body {
     position: relative;
     z-index: 3; // 高於hero-txt
 
-    .process-title {
-        position: sticky;
-        top: 0px;
-        text-align: center;
-        z-index: 3;
-        font-size: 2.5rem;
-        font-family: "Lexend Giga", sans-serif;
-        // margin-bottom: 20rem;
-    }
 
     .process-wrap {
         display: flex;
@@ -240,24 +233,32 @@ body {
             flex: 1;
             z-index: 2;
 
+            .process-title {
+                text-align: center;
+                font-size: 2.5rem;
+                font-family: "EB Garamond", serif;
+                // margin-bottom: 20rem;
+            }
+
             .process-text {
                 margin: auto;
 
                 .process-info {
                     height: 100vh;
                     display: flex;
-                    margin-left: 30px;
+                    margin-left: 5rem;
                     flex-direction: column;
                     justify-content: center;
-                    text-align: end;
 
                     h2 {
                         font-size: 1.5rem;
-                        font-weight: 600;
+                        font-weight: bold;
+                        text-align: end;
                     }
 
                     p {
                         margin: 5px 0 80px 0;
+                        text-align: start;
                     }
                 }
             }
@@ -324,7 +325,7 @@ body {
 
             .notice-title {
                 font-size: 2.5rem;
-                font-family: "Lexend Giga", sans-serif;
+                font-family: "EB Garamond", serif;
                 color: #e3e3e3;
                 z-index: 3;
             }
@@ -438,7 +439,7 @@ body {
                 justify-content: center;
                 align-items: center;
                 font-size: 2.5rem;
-                font-family: "Lexend Giga", sans-serif;
+                font-family: "EB Garamond", serif;
                 flex-direction: column;
             }
 

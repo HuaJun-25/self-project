@@ -4,16 +4,33 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Draggable } from "gsap/Draggable";
 import { CustomEase } from "gsap/CustomEase";
 import Lenis from "@studio-freight/lenis";
-import { FaArrowRight } from "react-icons/fa6";
 import '../scss/home.scss';
 
 import home1 from '../images/process02.avif';
+import work1 from '../images/28.avif';
+import work2 from '../images/07.png';
+import work3 from '../images/08.png';
+import work4 from '../images/27.avif';
+import work5 from '../images/15.png';
+import work6 from '../images/11.avif';
 import item1 from '../images/item01.avif';
-import item2 from '../images/item02.avif';
-import item3 from '../images/item03.avif';
+import item2 from '../images/20.png';
+import item3 from '../images/25.png';
 import item4 from '../images/item04.avif';
 import process1 from '../images/process01.avif';
 import process2 from '../images/process02.avif';
+import notice1 from '../images/01.png';
+import notice2 from '../images/02.png';
+import notice3 from '../images/03.png';
+import notice4 from '../images/04.avif';
+import notice5 from '../images/05.png';
+import notice6 from '../images/06.png';
+import notice7 from '../images/13.png';
+import notice8 from '../images/16.avif';
+import notice9 from '../images/17.png';
+import notice10 from '../images/23.png';
+import notice11 from '../images/26.png';
+
 
 gsap.registerPlugin(Draggable, ScrollTrigger, CustomEase);
 CustomEase.create("projectExpand", "0.25, 0.1, 0.25, 1.05");
@@ -22,13 +39,8 @@ CustomEase.create("textReveal", "0.25, 1, 0.5, 1");
 
 // works-照片
 const worksimgs = [
-    "https://images.plurk.com/228G6ulq0CfXhrY8DaGWDE.jpg",
-    "https://images.plurk.com/5AeDelBnGDeJx916XOZSt0.jpg",
-    'https://images.plurk.com/595IlwszYWBY0DnRah1EW8.jpg',
-    "https://images.plurk.com/1PmIQzcHGyAoaMN3KyO0Oy.jpg",
+    work1, work2, work3, work4, work5, work6,
     "https://images.plurk.com/3sVMZS4iMpwdOvj3h0sYZQ.jpg",
-    "https://images.plurk.com/7E4DdiJ77oBorI0IV6stVg.jpg",
-    "https://images.plurk.com/7iGOOgSj9HinG94t4aAmMA.jpg",
 ];
 // item-照片
 const itemsimgs = [
@@ -519,7 +531,7 @@ const Home = () => {
                             onMouseLeave={() => setShow(false)}
                         >
                             <div className="item-title">
-                               <p>{item.title}</p>
+                                <p>{item.title}</p>
                             </div>
                             <img
                                 ref={itemimgRef}
@@ -533,7 +545,7 @@ const Home = () => {
                                     top: '-100px',
                                     left: '-20%',
                                     height: 'auto',
-                                    // zIndex: 2,
+                                    zIndex: 2,
                                     opacity: 0,      // 預設透明
                                     transform: "scale(0.8)", // 預設縮小
                                 }}
@@ -562,23 +574,23 @@ const Home = () => {
 
             {/* process */}
             <div className="processinner">
-                <div className="process-title" >
-                    <h3>PROCESS</h3></div>
                 <div className="process-wrap" ref={processRef}>
                     <div className="process-left">
+                    <div className="process-title" >
+                        <h3>PROCESS</h3></div>
                         <div className="process-text">
                             <div className="process-info">
                                 <h2>01. 討論</h2>
                                 <p>- 修改請一次性羅列清楚，紅線ok<br />- 個人作畫習慣顏色皆會有偏差<br />- 可以許願，有不想出現的構圖(側臉NG等)需事先告知</p>
-                                <h2>▶02. 構圖</h2>
+                                <h2>02. 構圖▶</h2>
                                 <p>- 可修改1次<br />- 確認大致位置分布(簡易十字臉)</p>
                             </div>
                             <div className="process-info">
-                                <h2>▶03. 草稿</h2>
+                                <h2>03. 草稿▶</h2>
                                 <p>- 可修改2次<br />- 確認大致氛圍舖色和人物</p>
                             </div>
                             <div className="process-info">
-                                <h2>▶04. 完稿確認</h2>
+                                <h2>04. 完稿確認▶</h2>
                                 <p>- 可修改2次<br />- 不提供構圖大改<br />- 有少畫/設定錯/小部分修改ok</p>
                                 <h2>05. 交付</h2>
                                 <p>- 需要修改皆可提，評估後在負擔範圍內不會要求加價<br />- 提供PNG檔</p>
@@ -601,18 +613,18 @@ const Home = () => {
             <div className="noticeinner">
                 <div onMouseMove={noticeMouseMove} className="notice-wrap">
                     <div ref={nplane1} className="notice-plane">
-                        <img src={item1} alt="image" />
-                        <img src={item2} alt="image" />
-                        <img src={item3} alt="image" />
+                        <img src={notice1} alt="image" />
+                        <img src={notice2} alt="image" />
+                        <img src={notice3} alt="image" />
                     </div>
                     <div ref={nplane2} className="notice-plane">
-                        <img src={item4} alt="image" />
-                        <img src={item3} alt="image" />
-                        <img src={item2} alt="image" />
+                        <img src={notice4} alt="image" />
+                        <img src={notice5} alt="image" />
+                        <img src={notice6} alt="image" />
                     </div>
                     <div ref={nplane3} className="notice-plane">
-                        <img src={item1} alt="image" />
-                        <img src={item4} alt="image" />
+                        <img src={notice7} alt="image" />
+                        <img src={notice8} alt="image" />
                     </div>
                     <div className="notice-text">
                         <div className="notice-title" >
