@@ -6,14 +6,23 @@
     user-select: none;
     //border: 1px solid red;
 
-    // &::-webkit-scrollbar {
-    //     background-color: transparent;
-    //     border-radius: 99px;
-    // }
+    &::-webkit-scrollbar {
+        background: transparent;
+        border-radius: 99px;
+        width: 10px;
+    }
 
     &::-webkit-scrollbar-thumb {
         background-color: #9d9d9d;
         border-radius: 99px;
+        width: 10px;
+
+    }
+
+    &::-webkit-scrollbar-track-piece {
+
+      background: transparent;
+
     }
 }
 
@@ -284,8 +293,8 @@ body {
         position: absolute;
         text-align: center;
         z-index: 2;
-        left: 1rem;
-        top: 0;
+        right: 5rem;
+        top: 10rem;
         // transform: translate(-50%);
         font-size: 3rem;
         font-family: "EB Garamond", serif;
@@ -302,6 +311,7 @@ body {
             height: 500px;
             width: 30vw;
             overflow: hidden;
+            border-radius: 100px;
 
             img {
                 height: 100%;
