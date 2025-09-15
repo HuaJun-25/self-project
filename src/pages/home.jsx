@@ -13,6 +13,7 @@ import work3 from '../images/08.png';
 import work4 from '../images/27.avif';
 import work5 from '../images/15.png';
 import work6 from '../images/11.avif';
+import work7 from '../images/31.avif';
 import item1 from '../images/item01.avif';
 import item2 from '../images/20.png';
 import item3 from '../images/25.png';
@@ -39,8 +40,7 @@ CustomEase.create("textReveal", "0.25, 1, 0.5, 1");
 
 // works-照片
 const worksimgs = [
-    work1, work2, work3, work4, work5, work6,
-    "https://images.plurk.com/3sVMZS4iMpwdOvj3h0sYZQ.jpg",
+    work1, work2, work4, work3, work5, work6, work7,
 ];
 // item-照片
 const itemsimgs = [
@@ -218,6 +218,7 @@ const Home = () => {
     }, []);
 
     // item區 ---------------------------------------
+    const [displayImg, setDisplayImg] = useState(itemsimgs[0]?.ImgSrc || "");
     const [openItem, setOpenItem] = useState(null);       // 目標要開的項目
     const [renderedItem, setRenderedItem] = useState(null); // DOM 實際渲染的項目
     const [isAnimating, setIsAnimating] = useState(false); // 防止動畫重疊
@@ -334,7 +335,8 @@ const Home = () => {
     const itemMouseMove = (e) => { // 滑鼠
         if (itemimgRef.current) {
             gsap.to(itemimgRef.current, {
-                x: e.clientX + 20,
+                x: e.clientX + 5,
+                // x: window.innerWidth - 200,
                 y: e.clientY + 20,
                 duration: 0.4,
                 ease: "power3.out",
@@ -443,7 +445,7 @@ const Home = () => {
     const formRef = useRef(null);
     const textareaRef = useRef(null);
 
-    const handleCopy = () => {
+    const handleCopy = () => { // 表單複製
         const formEl = formRef.current;
         if (!formEl) return;
 
@@ -466,6 +468,54 @@ const Home = () => {
         document.execCommand("copy");
         alert("表單資料已複製到剪貼簿！");
     };
+
+    // 共用區 ---------------------------------------
+    gsap.utils.toArray(".title").forEach(section => { //標題字動畫
+        const spans = section.querySelectorAll("h3 span");
+        gsap.to(spans, {
+            y: 0,
+            opacity: 1,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: section,       // 每個區塊自己觸發
+                start: "top 80%",       // 區塊進入螢幕 70% 時
+                toggleActions: "play none none none",
+            }
+        });
+    });
+    const goitemRef = useRef(null);
+    const goprocessRef = useRef(null);
+    const gonoticeRef = useRef(null);
+    const gocontactRef = useRef(null);
+
+    // nav跳轉
+    const scrollTo = (ref) => {
+        if (ref.current) {
+            const top = ref.current.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({ top: top, behavior: "smooth" });
+        }
+    };
+    // nav顯示
+    const navbarRef = useRef(null);
+    useEffect(() => {
+        gsap.fromTo(
+            navbarRef.current,
+            { opacity: 0 },
+            {
+                opacity: 1,     // 顯示
+                scrollTrigger: {
+                    trigger: ".worksinner",
+                    start: "top top", // 當 hero 區塊底部到達 viewport 上方時
+                    end: "+=9999",
+                    toggleActions: "play reverse play reverse",
+                },
+            }
+        );
+    }, []);
+
+
 
     return (
         <>
@@ -490,11 +540,22 @@ const Home = () => {
                 <div className="hero-bg">
                     <div ref={herocontentRef} className="hero-content">
                         <div className="hero-img" ref={heroimgRef}>
-                            <img ref={himgRef} src={home1} alt="" />
+                            <img ref={himgRef} src={home1} alt="homepic" draggable="false" />
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* menu */}
+            <nav className="navbar" ref={navbarRef}>
+                <ul className="menu">
+                    <li><a onClick={(e) => { e.preventDefault(); scrollTo(wrapperRef); }}>WORKS</a></li>
+                    <li><a onClick={(e) => { e.preventDefault(); scrollTo(goitemRef); }}>ITEMS</a></li>
+                    <li><a onClick={(e) => { e.preventDefault(); scrollTo(processRef); }}>PROCESS</a></li>
+                    <li><a onClick={(e) => { e.preventDefault(); scrollTo(gonoticeRef); }}>NOTICE</a></li>
+                    <li><a onClick={(e) => { e.preventDefault(); scrollTo(gocontactRef); }}>CONTACT</a></li>
+                </ul>
+            </nav>
 
             {/* works */}
             <div className="worksinner" ref={wrapperRef}>
@@ -506,10 +567,10 @@ const Home = () => {
             </div>
 
             {/* item */}
-            <div className="itemsinner">
-                <div className="items-title" >
-                    <h3>ITEMS</h3></div>
-                <div className="itemwrapper">
+            <div className="itemsinner" ref={goitemRef}>
+                <div className="title" >
+                    <h3><span>I</span><span>T</span><span>E</span><span>M</span><span>S</span></h3></div>
+                {/* <div className="itemwrapper">
                     {itemsimgs.map((item) => (
                         <div key={item.id} className="item-wrap"
                             onClick={(e) => {
@@ -543,7 +604,7 @@ const Home = () => {
                                     width: "180px",
                                     pointerEvents: "none",
                                     top: '-100px',
-                                    left: '-20%',
+                                    left: '5%',
                                     height: 'auto',
                                     zIndex: 2,
                                     opacity: 0,      // 預設透明
@@ -569,15 +630,93 @@ const Home = () => {
                                 </div>
                             )}
                         </div>
-                    ))}</div>
+                    ))}</div> */}
+                <div className="itemwrapper">
+                    {/* 左邊固定圖片 */}
+                    <div className="item-left">
+                        <img src={displayImg} alt="preview" />
+                    </div>
+
+                    {/* 右邊文字列表 */}
+                    <div className="item-right">
+                        {itemsimgs.map((item) => (
+                            <div
+                                key={item.id}
+                                className="item-wrap"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClick(item.id);
+
+                                    if (activeItemId === item.id) {
+                                        setActiveItemId(null); // 再次點擊已開啟 → 關閉
+                                    } else {
+                                        setActiveItemId(item.id); // 開啟新項目
+                                        setDisplayImg(item.ImgSrc); // 點擊後左邊圖片固定成該項目圖片
+                                    }
+                                }}
+                                onMouseMove={itemMouseMove}
+                                onMouseEnter={() => {
+                                    // if (activeItemId !== item.id) {
+                                    //     setHoverItem(item);
+                                    //     setDisplayImg(item.ImgSrc); // hover 時左邊圖片跟隨
+                                    //     setShow(true);
+                                    // }
+                                    if (openItem) return;
+                                    setDisplayImg(item.ImgSrc);
+                                }}
+                                onMouseLeave={() => setShow(false)} >
+                                <div className="item-title">
+                                    <p>{item.title}</p>
+                                </div>
+
+                                {renderedItem === item.id && (
+                                    <div className="item-content" ref={(el) => (containerRefs.current[item.id] = el)} >
+                                        <div className="item-contentwrap" ref={(el) => (textRefs.current[item.id] = el)} >
+                                            <div className="item-desc">
+                                                <p>{item.desc}</p>
+                                            </div>
+                                            {/* <div className="item-img" style={{ flex: 1 }}>
+                                                <img src={item.ImgSrc} alt="" />
+                                            </div> */}
+                                            <div className="item-price">
+                                                <p>{item.title}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* 游標跟隨圖片 */}
+                    {/* <img
+                        ref={itemimgRef}
+                        src={hoverItem?.ImgSrc}
+                        alt=""
+                        className="item-img-follow"
+                        style={{
+                            position: "fixed",
+                            width: "180px",
+                            pointerEvents: "none",
+                            top: "-100px",
+                            left: "5%",
+                            height: "auto",
+                            zIndex: 2,
+                            opacity: 0,
+                            transform: "scale(0.8)",
+                        }}
+                    /> */}
+                </div>
+
             </div>
 
             {/* process */}
-            <div className="processinner">
+            <div className="processinner" ref={goprocessRef}>
                 <div className="process-wrap" ref={processRef}>
                     <div className="process-left">
-                    <div className="process-title" >
-                        <h3>PROCESS</h3></div>
+                        <div className="title" >
+                            <h3><span>P</span><span>R</span><span>O</span><span>C</span>
+                                <span>E</span><span>S</span><span>S</span></h3></div>
                         <div className="process-text">
                             <div className="process-info">
                                 <h2>01. 討論</h2>
@@ -600,9 +739,9 @@ const Home = () => {
                     <div className="process-right">
                         <div className="process-right-b1">
                             <div className="process-img">
-                                <div className="process-img-item"><img src={process1} alt="" draggable="false" /></div>
-                                <div className="process-img-item"><img src={process2} alt="" draggable="false" /></div>
-                                <div className="process-img-item"><img src="https://images.unsplash.com/photo-1754079132758-5dfb65298934?q=80&w=2196&auto=format&fit=crop" alt="" draggable="false" /></div>
+                                <div className="process-img-item"><img src={process1} alt="p-構圖" draggable="false" /></div>
+                                <div className="process-img-item"><img src={process2} alt="p-草稿" draggable="false" /></div>
+                                <div className="process-img-item"><img src={process1} alt="p-完稿" draggable="false" /></div>
                             </div>
                         </div>
                     </div>
@@ -610,25 +749,26 @@ const Home = () => {
             </div>
 
             {/* notice */}
-            <div className="noticeinner">
+            <div className="noticeinner" ref={gonoticeRef}>
                 <div onMouseMove={noticeMouseMove} className="notice-wrap">
                     <div ref={nplane1} className="notice-plane">
-                        <img src={notice1} alt="image" />
-                        <img src={notice2} alt="image" />
-                        <img src={notice3} alt="image" />
+                        <img src={notice7} alt="n-pic" />
+                        <img src={notice8} alt="n-pic" />
                     </div>
                     <div ref={nplane2} className="notice-plane">
-                        <img src={notice4} alt="image" />
-                        <img src={notice5} alt="image" />
-                        <img src={notice6} alt="image" />
+                        <img src={notice10} alt="n-pic" />
+                        <img src={notice5} alt="n-pic" />
+                        <img src={notice3} alt="n-pic" />
                     </div>
                     <div ref={nplane3} className="notice-plane">
-                        <img src={notice7} alt="image" />
-                        <img src={notice8} alt="image" />
+                        <img src={notice1} alt="n-pic" />
+                        <img src={notice2} alt="n-pic" />
+                        <img src={notice6} alt="n-pic" />
                     </div>
                     <div className="notice-text">
-                        <div className="notice-title" >
-                            <h3>NOTICE</h3>
+                        <div className="title" >
+                            <h3><span>N</span><span>O</span><span>T</span>
+                                <span>I</span><span>C</span><span>E</span></h3>
                         </div>
                         <p>
                             - 不接：官方禁止委託之作品、古風、真人<br />
@@ -648,14 +788,15 @@ const Home = () => {
             </div>
 
             {/* contact */}
-            <div className="contactinner">
+            <div className="contactinner" ref={gocontactRef}>
                 <div className="contact-wrap">
                     <div className="contact-pic">
 
                     </div>
                     <div className="contact-desc">
-                        <div className="contact-title" >
-                            <h3>CONTACT</h3>
+                        <div className="title" >
+                            <h3><span>C</span><span>O</span><span>N</span>
+                                <span>T</span><span>A</span><span>C</span><span>T</span></h3>
                         </div>
                         <p>- 依需求評估報價，都確認沒問題後才會進行排單<br />
                             {/* - 報價後不進行委託可以直接說沒問題👌<br /> */}
@@ -697,20 +838,20 @@ const Home = () => {
                             <li className="contact-list">
                                 <div className="contact-text"><p>其他詳細需求</p></div>
                                 <div className="contact-inputs">
-                                    <textarea type="text" rows={10} cols={40} />
+                                    <textarea type="text" rows={10} cols={33} />
                                 </div>
                             </li>
                         </ul>
                     </form>
-                    <button onClick={handleCopy}>一鍵複製表單</button>
+                    <button onClick={handleCopy}>COPY</button>
 
                     {/* 隱藏 textarea 用於複製 */}
                     <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
                 </div>
-
             </div>
 
-            <footer> </footer>
+            <footer><p>© ⏹︎⏹︎⏹︎⏹︎⏹︎⏹︎. all rights reserved.</p></footer>
+
         </>
     );
 }
