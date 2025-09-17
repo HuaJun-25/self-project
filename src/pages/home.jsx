@@ -18,6 +18,10 @@ import item1 from '../images/item01.avif';
 import item2 from '../images/20.png';
 import item3 from '../images/25.png';
 import item4 from '../images/item04.avif';
+import item1a from '../images/01-2.jpg';
+import item2a from '../images/02-2.png';
+import item3a from '../images/03-2.png';
+import item4a from '../images/04-2.png';
 import process1 from '../images/process01.avif';
 import process2 from '../images/process02.avif';
 import notice1 from '../images/01.png';
@@ -49,24 +53,28 @@ const itemsimgs = [
         ImgSrc: item1,
         title: "雙人插圖",
         desc: "- 半身人物占比為主",
+        Imgline: item1a,
     },
     {
         id: 2,
         ImgSrc: item2,
         title: "全身插圖",
         desc: "- 含簡單裝飾背景",
+        Imgline: item2a,
     },
     {
         id: 3,
         ImgSrc: item3,
         title: "黑白頁漫",
         desc: "- 限委託過",
+        Imgline: item3a,
     },
     {
         id: 4,
         ImgSrc: item4,
         title: "滿版插圖",
         desc: "Description1",
+        Imgline: item4a,
     },
 ];
 
@@ -218,7 +226,7 @@ const Home = () => {
     }, []);
 
     // item區 ---------------------------------------
-    const [displayImg, setDisplayImg] = useState(itemsimgs[0]?.ImgSrc || "");
+    const [displayImg, setDisplayImg] = useState(itemsimgs[0]?.Imgline || "");
     const [openItem, setOpenItem] = useState(null);       // 目標要開的項目
     const [renderedItem, setRenderedItem] = useState(null); // DOM 實際渲染的項目
     const [isAnimating, setIsAnimating] = useState(false); // 防止動畫重疊
@@ -249,16 +257,24 @@ const Home = () => {
             if (callback) callback();
             return;
         }
-        gsap.to(el, {
-            height: 0,
-            opacity: 0,
-            duration: 0.5,
-            ease: "projectCollapse",
-            onComplete: () => {
-                setRenderedItem(null); // 移除 DOM
-                if (callback) callback();
-            },
-        });
+
+        // 先讀取目前高度
+        const currentHeight = el.offsetHeight;
+
+        gsap.fromTo(
+            el,
+            { height: currentHeight, opacity: 1 },
+            {
+                height: 0,
+                opacity: 0,
+                duration: 0.5,
+                ease: "projectCollapse", // 可以改你原本的 projectCollapse
+                onComplete: () => {
+                    setRenderedItem(null); // 動畫結束後再移除 DOM
+                    if (callback) callback();
+                },
+            }
+        );
     };
     const handleClickOutside = (e) => {
         if (!e.target.closest(".item") && openItem) {
@@ -308,6 +324,7 @@ const Home = () => {
     const [hoverItem, setHoverItem] = useState(); // 取當前hover的item
     const [activeItemId, setActiveItemId] = useState(null); // 當前開啟的項目
     const itemimgRef = useRef(null);
+
     useLayoutEffect(() => {
         if (!itemimgRef.current) return;
 
@@ -332,7 +349,8 @@ const Home = () => {
         return () => ctx.revert();
     }, [show]);
 
-    const itemMouseMove = (e) => { // 滑鼠
+
+    const itemMouseMove = (e) => {
         if (itemimgRef.current) {
             gsap.to(itemimgRef.current, {
                 x: e.clientX + 5,
@@ -570,67 +588,6 @@ const Home = () => {
             <div className="itemsinner" ref={goitemRef}>
                 <div className="title" >
                     <h3><span>I</span><span>T</span><span>E</span><span>M</span><span>S</span></h3></div>
-                {/* <div className="itemwrapper">
-                    {itemsimgs.map((item) => (
-                        <div key={item.id} className="item-wrap"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleClick(item.id);
-                                if (activeItemId === item.id) {
-                                    setActiveItemId(null);      // 再次點擊已開啟 → 關閉
-                                } else {
-                                    setActiveItemId(item.id);   // 開啟新項目
-                                }
-                            }}
-                            onMouseMove={itemMouseMove}
-                            onMouseEnter={() => {
-                                if (activeItemId !== item.id) {
-                                    setHoverItem(item);
-                                    setShow(true);
-                                }
-                            }}
-                            onMouseLeave={() => setShow(false)}
-                        >
-                            <div className="item-title">
-                                <p>{item.title}</p>
-                            </div>
-                            <img
-                                ref={itemimgRef}
-                                src={hoverItem?.ImgSrc}
-                                alt={item.title}
-                                className="item-img-follow"
-                                style={{
-                                    position: "fixed",
-                                    width: "180px",
-                                    pointerEvents: "none",
-                                    top: '-100px',
-                                    left: '5%',
-                                    height: 'auto',
-                                    zIndex: 2,
-                                    opacity: 0,      // 預設透明
-                                    transform: "scale(0.8)", // 預設縮小
-                                }}
-                            />
-                            {renderedItem === item.id && (
-                                <div className="item-content"
-                                    ref={(el) => (containerRefs.current[item.id] = el)} >
-                                    <div
-                                        className="item-contentwrap"
-                                        ref={(el) => (textRefs.current[item.id] = el)} >
-                                        <div className="item-desc" style={{ flex: 1 }}>
-                                            <p>{item.desc}</p>
-                                        </div>
-                                        <div className="item-img" style={{ flex: 1 }}>
-                                            <img src={item.ImgSrc} alt="" />
-                                        </div>
-                                        <div className="item-price" style={{ flex: 1 }}>
-                                            <p>{item.title}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}</div> */}
                 <div className="itemwrapper">
                     {/* 左邊固定圖片 */}
                     <div className="item-left">
@@ -656,28 +613,19 @@ const Home = () => {
                                 }}
                                 onMouseMove={itemMouseMove}
                                 onMouseEnter={() => {
-                                    // if (activeItemId !== item.id) {
-                                    //     setHoverItem(item);
-                                    //     setDisplayImg(item.ImgSrc); // hover 時左邊圖片跟隨
-                                    //     setShow(true);
-                                    // }
                                     if (openItem) return;
-                                    setDisplayImg(item.ImgSrc);
+                                    setDisplayImg(item.Imgline);
                                 }}
                                 onMouseLeave={() => setShow(false)} >
                                 <div className="item-title">
                                     <p>{item.title}</p>
                                 </div>
-
                                 {renderedItem === item.id && (
                                     <div className="item-content" ref={(el) => (containerRefs.current[item.id] = el)} >
                                         <div className="item-contentwrap" ref={(el) => (textRefs.current[item.id] = el)} >
                                             <div className="item-desc">
                                                 <p>{item.desc}</p>
                                             </div>
-                                            {/* <div className="item-img" style={{ flex: 1 }}>
-                                                <img src={item.ImgSrc} alt="" />
-                                            </div> */}
                                             <div className="item-price">
                                                 <p>{item.title}</p>
                                             </div>
