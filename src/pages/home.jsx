@@ -6,7 +6,7 @@ import { CustomEase } from "gsap/CustomEase";
 import Lenis from "@studio-freight/lenis";
 import '../scss/home.scss';
 
-import home1 from '../images/process02.avif';
+import home1 from '../images/home1.avif';
 import work1 from '../images/28.avif';
 import work2 from '../images/07.png';
 import work3 from '../images/08.png';
@@ -668,19 +668,36 @@ const Home = () => {
                         <div className="process-text">
                             <div className="process-info">
                                 <h2>01. 討論</h2>
-                                <p>- 修改請一次性羅列清楚，紅線ok<br />- 個人作畫習慣顏色皆會有偏差<br />- 可以許願，有不想出現的構圖(側臉NG等)需事先告知</p>
+                                <ul>
+                                    <li>修改請一次性羅列清楚，紅線ok</li>
+                                    <li>個人作畫習慣顏色皆會有偏差</li>
+                                    <li>可以許願，有不想出現的構圖(側臉NG等)需事先告知</li>
+                                </ul>
                                 <h2>02. 構圖▶</h2>
-                                <p>- 可修改1次<br />- 確認大致位置分布(簡易十字臉)</p>
+                                <ul>
+                                    <li>可修改1次</li>
+                                    <li>確認大致位置分布(簡易十字臉)</li>
+                                </ul>
                             </div>
                             <div className="process-info">
                                 <h2>03. 草稿▶</h2>
-                                <p>- 可修改2次<br />- 確認大致氛圍舖色和人物</p>
+                                <ul>
+                                    <li>可修改2次</li>
+                                    <li>確認大致氛圍舖色和人物</li>
+                                </ul>
                             </div>
                             <div className="process-info">
                                 <h2>04. 完稿確認▶</h2>
-                                <p>- 可修改2次<br />- 不提供構圖大改<br />- 有少畫/設定錯/小部分修改ok</p>
+                                <ul>
+                                    <li>可修改2次</li>
+                                    <li>不提供構圖大改</li>
+                                    <li>有少畫/設定錯/小部分修改ok</li>
+                                </ul>
                                 <h2>05. 交付</h2>
-                                <p>- 需要修改皆可提，評估後在負擔範圍內不會要求加價<br />- 提供PNG檔</p>
+                                <ul>
+                                    <li>需要修改皆可提，評估後在負擔範圍內不會要求加價</li>
+                                    <li>提供PNG檔</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -689,7 +706,7 @@ const Home = () => {
                             <div className="process-img">
                                 <div className="process-img-item"><img src={process1} alt="p-構圖" draggable="false" /></div>
                                 <div className="process-img-item"><img src={process2} alt="p-草稿" draggable="false" /></div>
-                                <div className="process-img-item"><img src={process1} alt="p-完稿" draggable="false" /></div>
+                                <div className="process-img-item"><img src={home1} alt="p-完稿" draggable="false" /></div>
                             </div>
                         </div>
                     </div>

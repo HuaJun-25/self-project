@@ -279,8 +279,19 @@ body {
                         font-size: 1.5rem;
                         font-weight: bold;
                         text-align: end;
+                        margin-top: 2rem;
                     }
 
+                    ul {
+                        list-style: none;
+                        padding: 0;
+
+                        li {
+                            &::before {
+                                content: '╴';
+                            }
+                        }
+                    }
                     p {
                         margin: 5px 0 80px 0;
                         text-align: start;
@@ -578,6 +589,7 @@ footer {
     height: 10vh;
     width: 100%;
     z-index: 3;
+    text-align: center;
 
     p {
         display: inline-block;
