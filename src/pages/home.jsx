@@ -16,10 +16,10 @@ import work5 from '../images/15.png';
 import work6 from '../images/11.avif';
 import work7 from '../images/31.avif';
 import item1 from '../images/item01.avif';
-import item2 from '../images/20.png';
+import item2 from '../images/item02.png';
 import item3 from '../images/25.png';
 import item4 from '../images/item04.avif';
-import item1a from '../images/01-2.jpg';
+import item1a from '../images/01-2.png';
 import item2a from '../images/02-2.png';
 import item3a from '../images/03-2.png';
 import item4a from '../images/04-2.png';
@@ -36,6 +36,7 @@ import notice8 from '../images/16.avif';
 import notice9 from '../images/17.png';
 import notice10 from '../images/23.png';
 import notice11 from '../images/26.png';
+import arrow from '../images/arrow.svg'
 
 
 
@@ -51,29 +52,33 @@ const itemsimgs = [
         id: 1,
         ImgSrc: item1,
         title: "雙人插圖",
-        desc: "- 半身人物占比為主",
+        desc: ["半身人物占比為主", "｜含簡單背景","｜互動請附上簡單設定"],
         Imgline: item1a,
+        price: '',
     },
     {
         id: 2,
         ImgSrc: item2,
         title: "全身插圖",
-        desc: "- 含簡單裝飾背景",
+        desc: ["含簡單裝飾背景","｜須提供主題","｜不收雙人"],
         Imgline: item2a,
+        price: '',
     },
     {
         id: 3,
         ImgSrc: item3,
         title: "黑白頁漫",
-        desc: "- 限委託過",
+        desc: ["限委託過","｜題材/頁數皆有限制，依格數內容報價幅度大","｜較擅長簡單小互動的劇情"],
         Imgline: item3a,
+        price: '',
     },
     {
         id: 4,
         ImgSrc: item4,
         title: "滿版插圖",
-        desc: "Description1",
+        desc: "保底 2半身+1Q版｜須提供主題｜",
         Imgline: item4a,
+        price: '',
     },
 ];
 
@@ -272,10 +277,10 @@ const Home = () => {
             // 點擊時固定左邊大圖
             gsap.fromTo(
                 imgRef.current,
-                { opacity: 0 },
+                { opacity: 0.6 },
                 {
                     opacity: 1,
-                    duration: 0.6,
+                    duration: 1,
                     ease: "power2.out",
                     onStart: () => setDisplayImg(imgSrc),
                 }
@@ -534,19 +539,18 @@ const Home = () => {
                             >
                                 <div className="item-title">
                                     <p>{item.title}</p>
+                                    <img src={arrow} alt="" />
                                 </div>
 
                                 <div
                                     className="item-content"
-                                    ref={(el) => (contentRefs.current[item.id] = el)}
-                                    style={{ height: 0, overflow: "hidden" }}
-                                >
+                                    ref={(el) => (contentRefs.current[item.id] = el)} >
                                     <div className="item-contentwrap">
                                         <div className="item-desc">
                                             <p>{item.desc}</p>
                                         </div>
                                         <div className="item-price">
-                                            <p>{item.title}</p>
+                                            <p>{item.price}</p>
                                         </div>
                                     </div>
                                 </div>
