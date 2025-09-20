@@ -7,7 +7,7 @@
     //border: 1px solid red;
 
     &::-webkit-scrollbar {
-        background: transparent;
+        background-color: #FAF8F4;
         border-radius: 99px;
         width: 10px;
     }
@@ -27,8 +27,8 @@
 }
 
 body {
-
     font-family: "Gothic A1", sans-serif;
+    font-style: normal;
     font-weight: 500;
     scroll-behavior: smooth;
     background-color: #FAF8F4;
@@ -60,7 +60,7 @@ body {
         border: none;
         padding: 15px;
         border-radius: 23px 5px 25px 20px;
-
+        cursor: pointer;
 
         .bar {
             display: block;
@@ -249,37 +249,33 @@ body {
 .itemsinner {
     width: 100%;
     // height: 120vh;
-    background-color: #FAF8F4;
     position: relative;
     z-index: 3;
     // overflow: hidden;
     display: flex;
-    padding-top: 8vh;
+    padding-top: 16vh;
     padding-bottom: 20vh;
-
-    /*
-    &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background-image: url('/public/ricepaper2.png');
-        background-size: auto;
-        opacity: 0.5;
-        mix-blend-mode: multiply;
-    }*/
 
     .title {
         position: absolute;
         text-align: center;
         z-index: 2;
-        right: 30%;
-        // top: 10rem;
-        // transform: translate(-50%);
+        left: 60%;
         font-size: 3rem;
         font-family: "EB Garamond", serif;
-        margin-top: 2rem;
 
+          &::before {
+            content: '';
+            background-image: url(../images/deco02.png);
+            width: 280px;
+            height: 240px;
+            object-fit: contain;
+            object-position: center;
+            position: absolute;
+            background-repeat: no-repeat;
+            top: -140%;
+            right: 50%;
+        }
     }
 
     .itemwrapper {
@@ -288,7 +284,7 @@ body {
         width: 100%;
 
         .item-left {
-            margin-top: 5rem;
+            margin-top: 2rem;
             height: 500px;
             width: 30vw;
             overflow: hidden;
@@ -304,8 +300,8 @@ body {
 
         .item-right {
             flex: 1;
-            padding-left: 2rem;
-            margin-top: 12rem;
+            padding: 0 2rem;
+            margin-top: 10rem;
 
             .item-wrap {
                 .item-title {
@@ -336,6 +332,14 @@ body {
                     overflow: hidden;
                     height: 0;
                 }
+
+                &:hover {
+                    .item-title {
+                        img {
+                            animation: shake 2s infinite;
+                        }
+                    }
+                }
             }
         }
     }
@@ -344,21 +348,8 @@ body {
 // process
 .processinner {
     width: 100%;
-    background-color: #FAF8F4;
     position: relative;
     z-index: 3; // 高於hero-txt
-/*
-    &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background-image: url('/public/ricepaper2.png');
-        background-size: auto;
-        opacity: 0.5;
-        mix-blend-mode: multiply;
-        z-index: 3;
-    }*/
 
     .title {
         text-align: center;
@@ -670,7 +661,6 @@ body {
 
                             &::placeholder {
                                 color: #b9b9b9;
-
                             }
                         }
 
@@ -678,7 +668,8 @@ body {
                             padding: .5rem;
 
                             &:focus {
-                                outline: none;
+                                outline: 2px solid #555;
+                                // border: ;
                             }
                         }
 
@@ -687,7 +678,7 @@ body {
             }
         }
 
-        button {
+        .c-copy {
             border: none;
             background-color: transparent;
             font-size: 1.05rem;
@@ -715,6 +706,48 @@ body {
                 transition: width 0.3s ease 0s, left 0.3s ease 0s;
                 width: 0;
             }
+
+        }
+
+        .connection {
+            margin-top: 5%;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+
+            button {
+                position: relative;
+                border: none;
+                padding: 2rem 5rem;
+                border-radius: 99px;
+                background-color: none;
+                cursor: pointer;
+
+                a {
+                    position: relative;
+                    font-size: 1.2rem;
+                    color: #FAF8F4;
+                    z-index: 1;
+                }
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 99px;
+                    background-color: #212121;
+                    transition: transform 0.4s cubic-bezier(.4, .4, 0, 1),
+                        background-color 0.4s;
+                    z-index: 0;
+                }
+
+                &:hover {
+                    &::before {
+                        background-color: #555;
+                        transform: scale(0.95);
+                    }
+                }
+            }
         }
     }
 }
@@ -741,5 +774,19 @@ h3 {
         display: inline-block;
         opacity: 0;
         transform: translateY(30px);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateY(0) rotate(0);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(10deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0);
     }
 }

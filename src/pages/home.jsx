@@ -52,7 +52,7 @@ const itemsimgs = [
         id: 1,
         ImgSrc: item1,
         title: "雙人插圖",
-        desc: ["半身人物占比為主", "｜含簡單背景","｜互動請附上簡單設定"],
+        desc: "半身人物占比為主｜含簡單背景｜互動請附上簡單設定",
         Imgline: item1a,
         price: '',
     },
@@ -60,7 +60,7 @@ const itemsimgs = [
         id: 2,
         ImgSrc: item2,
         title: "全身插圖",
-        desc: ["含簡單裝飾背景","｜須提供主題","｜不收雙人"],
+        desc: "含簡單裝飾背景｜須提供主題｜不收雙人",
         Imgline: item2a,
         price: '',
     },
@@ -68,7 +68,7 @@ const itemsimgs = [
         id: 3,
         ImgSrc: item3,
         title: "黑白頁漫",
-        desc: ["限委託過","｜題材/頁數皆有限制，依格數內容報價幅度大","｜較擅長簡單小互動的劇情"],
+        desc: "題材/頁數皆有限制，依格數內容報價幅度大｜較擅長簡單小互動的劇情",
         Imgline: item3a,
         price: '',
     },
@@ -491,7 +491,7 @@ const Home = () => {
             </div>
 
             {/* menu */}
-            <nav className="navbar" ref={navbarRef}>
+            <header className="navbar" ref={navbarRef}>
                 <button className="hamburger">
                     <span className="bar"></span>
                     <span className="bar"></span>
@@ -505,219 +505,224 @@ const Home = () => {
                     <li><a onClick={(e) => { e.preventDefault(); scrollTo(gonoticeRef); }}>NOTICE</a></li>
                     <li><a onClick={(e) => { e.preventDefault(); scrollTo(gocontactRef); }}>CONTACT</a></li>
                 </ul>
-            </nav>
+            </header>
 
-            {/* works */}
-            <div className="worksinner" ref={wrapperRef}>
-                <div className="works-images" ref={worksimgRef}>
-                    {worksimgs.map((item, i) => (
-                        <img key={i} src={item} className="wimage" alt={`img-${i}`} draggable="false" />
-                    ))}
-                </div>
-            </div>
-
-            {/* item */}
-            <div className="itemsinner" ref={goitemRef}>
-                <div className="title" >
-                    <h3><span>I</span><span>T</span><span>E</span><span>M</span><span>S</span></h3></div>
-                <div className="itemwrapper">
-                    {/* 左邊固定圖片 */}
-                    <div className="item-left">
-                        <img ref={imgRef} src={displayImg} alt="preview" />
-                    </div>
-
-                    {/* 右邊文字列表 */}
-                    <div className="item-right">
-                        {itemsimgs.map((item) => (
-                            <div
-                                key={item.id}
-                                className="item-wrap"
-                                onMouseEnter={() => {
-                                    if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
-                                }}
-                                onClick={() => toggleItem(item.id, item.ImgSrc)}
-                            >
-                                <div className="item-title">
-                                    <p>{item.title}</p>
-                                    <img src={arrow} alt="" />
-                                </div>
-
-                                <div
-                                    className="item-content"
-                                    ref={(el) => (contentRefs.current[item.id] = el)} >
-                                    <div className="item-contentwrap">
-                                        <div className="item-desc">
-                                            <p>{item.desc}</p>
-                                        </div>
-                                        <div className="item-price">
-                                            <p>{item.price}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <main>
+                {/* works */}
+                <div className="worksinner" ref={wrapperRef}>
+                    <div className="works-images" ref={worksimgRef}>
+                        {worksimgs.map((item, i) => (
+                            <img key={i} src={item} className="wimage" alt={`img-${i}`} draggable="false" />
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* process */}
-            <div className="processinner" ref={goprocessRef}>
-                <div className="title" >
-                    <h3><span>P</span><span>R</span><span>O</span><span>C</span>
-                        <span>E</span><span>S</span><span>S</span></h3></div>
-                <div className="process-wrap" ref={processRef}>
-                    <div className="process-left">
+                {/* item */}
+                <div className="itemsinner" ref={goitemRef}>
+                    <div className="title" >
+                        <h3><span>I</span><span>T</span><span>E</span><span>M</span><span>S</span></h3></div>
+                    <div className="itemwrapper">
+                        {/* 左邊固定圖片 */}
+                        <div className="item-left">
+                            <img ref={imgRef} src={displayImg} alt="preview" />
+                        </div>
 
-                        <div className="process-text">
-                            <div className="process-info">
-                                <h2>01. 討論</h2>
-                                <ul>
-                                    <li>修改請一次性羅列清楚，紅線ok</li>
-                                    <li>個人作畫習慣顏色皆會有偏差</li>
-                                    <li>可以許願，有不想出現的構圖(側臉NG等)需事先告知</li>
-                                </ul>
-                                <h2>02. 構圖▶</h2>
-                                <ul>
-                                    <li>可修改1次</li>
-                                    <li>確認大致位置分布(簡易十字臉)</li>
-                                </ul>
-                            </div>
-                            <div className="process-info">
-                                <h2>03. 草稿▶</h2>
-                                <ul>
-                                    <li>可修改2次</li>
-                                    <li>確認大致氛圍舖色和人物</li>
-                                </ul>
-                            </div>
-                            <div className="process-info">
-                                <h2>04. 完稿確認▶</h2>
-                                <ul>
-                                    <li>可修改2次</li>
-                                    <li>不提供構圖大改</li>
-                                    <li>有少畫/設定錯/小部分修改ok</li>
-                                </ul>
-                                <h2>05. 交付</h2>
-                                <ul>
-                                    <li>需要修改皆可提，評估後在負擔範圍內不會要求加價</li>
-                                    <li>提供PNG檔</li>
-                                </ul>
-                            </div>
+                        {/* 右邊文字列表 */}
+                        <div className="item-right">
+                            {itemsimgs.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="item-wrap"
+                                    onMouseEnter={() => {
+                                        if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
+                                    }}
+                                    onClick={() => toggleItem(item.id, item.ImgSrc)}
+                                >
+                                    <div className="item-title">
+                                        <p>{item.title}</p>
+                                        <img src={arrow} alt="" />
+                                    </div>
+
+                                    <div
+                                        className="item-content"
+                                        ref={(el) => (contentRefs.current[item.id] = el)} >
+                                        <div className="item-contentwrap">
+                                            <div className="item-desc">
+                                                <p>{item.desc}</p>
+                                            </div>
+                                            <div className="item-price">
+                                                <p>{item.price}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    <div className="process-right">
-                        <div className="process-right-b1">
-                            <div className="process-img">
-                                <div className="process-img-item"><img src={process1} alt="p-構圖" draggable="false" /></div>
-                                <div className="process-img-item"><img src={process2} alt="p-草稿" draggable="false" /></div>
-                                <div className="process-img-item"><img src={home1} alt="p-完稿" draggable="false" /></div>
+                </div>
+
+                {/* process */}
+                <div className="processinner" ref={goprocessRef}>
+                    <div className="title" >
+                        <h3><span>P</span><span>R</span><span>O</span><span>C</span>
+                            <span>E</span><span>S</span><span>S</span></h3></div>
+                    <div className="process-wrap" ref={processRef}>
+                        <div className="process-left">
+
+                            <div className="process-text">
+                                <div className="process-info">
+                                    <h2>01. 討論</h2>
+                                    <ul>
+                                        <li>修改請一次性羅列清楚，紅線ok</li>
+                                        <li>個人作畫習慣顏色皆會有偏差</li>
+                                        <li>可以許願，有不想出現的構圖(側臉NG等)需事先告知</li>
+                                    </ul>
+                                    <h2>02. 構圖▶</h2>
+                                    <ul>
+                                        <li>可修改1次</li>
+                                        <li>確認大致位置分布(簡易十字臉)</li>
+                                    </ul>
+                                </div>
+                                <div className="process-info">
+                                    <h2>03. 草稿▶</h2>
+                                    <ul>
+                                        <li>可修改2次</li>
+                                        <li>確認大致氛圍舖色和人物</li>
+                                    </ul>
+                                </div>
+                                <div className="process-info">
+                                    <h2>04. 完稿確認▶</h2>
+                                    <ul>
+                                        <li>可修改2次</li>
+                                        <li>不提供構圖大改</li>
+                                        <li>有少畫/設定錯/小部分修改ok</li>
+                                    </ul>
+                                    <h2>05. 交付</h2>
+                                    <ul>
+                                        <li>需要修改皆可提，評估後在負擔範圍內不會要求加價</li>
+                                        <li>提供PNG檔</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="process-right">
+                            <div className="process-right-b1">
+                                <div className="process-img">
+                                    <div className="process-img-item"><img src={process1} alt="p-構圖" draggable="false" /></div>
+                                    <div className="process-img-item"><img src={process2} alt="p-草稿" draggable="false" /></div>
+                                    <div className="process-img-item"><img src={home1} alt="p-完稿" draggable="false" /></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* notice */}
-            <div className="noticeinner" ref={gonoticeRef}>
-                <div onMouseMove={noticeMouseMove} className="notice-wrap">
-                    <div ref={nplane1} className="notice-plane">
-                        <img src={notice7} alt="n-pic" />
-                        <img src={notice8} alt="n-pic" />
-                    </div>
-                    <div ref={nplane2} className="notice-plane">
-                        <img src={notice10} alt="n-pic" />
-                        <img src={notice5} alt="n-pic" />
-                        <img src={notice3} alt="n-pic" />
-                    </div>
-                    <div ref={nplane3} className="notice-plane">
-                        <img src={notice1} alt="n-pic" />
-                        <img src={notice2} alt="n-pic" />
-                        <img src={notice6} alt="n-pic" />
-                    </div>
-                    <div className="notice-text">
-                        <div className="title" >
-                            <h3><span>N</span><span>O</span><span>T</span>
-                                <span>I</span><span>C</span><span>E</span></h3>
+                {/* notice */}
+                <div className="noticeinner" ref={gonoticeRef}>
+                    <div onMouseMove={noticeMouseMove} className="notice-wrap">
+                        <div ref={nplane1} className="notice-plane">
+                            <img src={notice7} alt="n-pic" />
+                            <img src={notice8} alt="n-pic" />
                         </div>
-                        <p>
-                            - 不接：官方禁止委託之作品、古風、真人<br />
-                            {/* - 如需標註 mili/咪哩 都可以<br /> */}
-                            - 超過付款期限(3日)視同取消委託<br />
-                            - 工期約為確認匯款後2個月(依實際告知為準)<br />
-                            - 有修改需求可能會依複雜度延後交稿日期(會事先告知)<br />
-                            - 交稿日期有變更會事先告知，甲方不同意將會全額退費<br />
-                            - 未提前告知延期的逾期行為將會全額退費<br />
-                            - 預計完稿日未包含完稿後確認修改時間<br />
-                            - 作品會上水印公開，禁止AI商用<br />
-                            - 圖可依排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br />
-                            {/* - 金額大於3000可先匯訂金1000<br/> */}
-                        </p>
+                        <div ref={nplane2} className="notice-plane">
+                            <img src={notice10} alt="n-pic" />
+                            <img src={notice5} alt="n-pic" />
+                            <img src={notice3} alt="n-pic" />
+                        </div>
+                        <div ref={nplane3} className="notice-plane">
+                            <img src={notice1} alt="n-pic" />
+                            <img src={notice2} alt="n-pic" />
+                            <img src={notice6} alt="n-pic" />
+                        </div>
+                        <div className="notice-text">
+                            <div className="title" >
+                                <h3><span>N</span><span>O</span><span>T</span>
+                                    <span>I</span><span>C</span><span>E</span></h3>
+                            </div>
+                            <p>
+                                - 不接：官方禁止委託之作品、古風、真人<br />
+                                {/* - 如需標註 mili/咪哩 都可以<br /> */}
+                                - 超過付款期限(3日)視同取消委託<br />
+                                - 工期約為確認匯款後2個月(依實際告知為準)<br />
+                                - 有修改需求可能會依複雜度延後交稿日期(會事先告知)<br />
+                                - 交稿日期有變更會事先告知，甲方不同意將會全額退費<br />
+                                - 未提前告知延期的逾期行為將會全額退費<br />
+                                - 預計完稿日未包含完稿後確認修改時間<br />
+                                - 作品會上水印公開，禁止AI商用<br />
+                                - 圖可依排版需求裁切、少量印製贈送收藏，返圖非常感謝🙆<br />
+                                {/* - 金額大於3000可先匯訂金1000<br/> */}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* contact */}
-            <div className="contactinner" ref={gocontactRef}>
-                <div className="contact-wrap">
-                    <div className="contact-pic">
+                {/* contact */}
+                <div className="contactinner" ref={gocontactRef}>
+                    <div className="contact-wrap">
+                        <div className="contact-pic">
 
-                    </div>
-                    <div className="contact-desc">
-                        <div className="title" >
-                            <h3><span>C</span><span>O</span><span>N</span>
-                                <span>T</span><span>A</span><span>C</span><span>T</span></h3>
                         </div>
-                        <p>- 依需求評估報價，都確認沒問題後才會進行排單<br />
-                            {/* - 報價後不進行委託可以直接說沒問題👌<br /> */}
-                            - 比較常在半夜回覆，有不想被打擾的可事先告知<br />
-                            - 排單順序以提供完整委託資料時間為準<br />
-                            - 個人因素報價所需時間較長(非常不好意思🙇)</p></div>
-                    <form className="contact-form" ref={formRef}>
-                        <ul className="contact-lists">
-                            <li className="contact-list">
-                                <div className="contact-text"><p>稱呼</p></div>
-                                <div className="contact-inputs">
-                                    <input type="text" size={40} />
-                                </div>
-                            </li>
-                            <li className="contact-list">
-                                <div className="contact-text"><p>項目</p></div>
-                                <div className="contact-inputs">
-                                    <input type="text" size={40} />
-                                </div>
-                            </li>
-                            <li className="contact-list">
-                                <div className="contact-text"><p>是否為驚喜包</p></div>
-                                <div className="contact-inputs">
-                                    <input type="text" size={40} placeholder="Y/N" />
-                                </div>
-                            </li>
-                            <li className="contact-list">
-                                <div className="contact-text"><p>人物設定</p></div>
-                                <div className="contact-inputs">
-                                    <input type="text" size={40} />
-                                </div>
-                            </li>
-                            <li className="contact-list">
-                                <div className="contact-text"><p>服裝設定</p></div>
-                                <div className="contact-inputs">
-                                    <input type="text" size={40} />
-                                </div>
-                            </li>
-                            <li className="contact-list">
-                                <div className="contact-text"><p>其他詳細需求</p></div>
-                                <div className="contact-inputs">
-                                    <textarea type="text" rows={10} cols={33} />
-                                </div>
-                            </li>
-                        </ul>
-                    </form>
-                    <button onClick={handleCopy}>COPY</button>
+                        <div className="contact-desc">
+                            <div className="title" >
+                                <h3><span>C</span><span>O</span><span>N</span>
+                                    <span>T</span><span>A</span><span>C</span><span>T</span></h3>
+                            </div>
+                            <p>- 依需求評估報價，都確認沒問題後才會進行排單<br />
+                                {/* - 報價後不進行委託可以直接說沒問題👌<br /> */}
+                                - 比較常在半夜回覆，有不想被打擾的可事先告知<br />
+                                - 排單順序以提供完整委託資料時間為準<br />
+                                - 個人因素報價所需時間較長(非常不好意思🙇)</p></div>
+                        <form className="contact-form" ref={formRef}>
+                            <ul className="contact-lists">
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>稱呼</p></div>
+                                    <div className="contact-inputs">
+                                        <input type="text" size={40} />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>項目</p></div>
+                                    <div className="contact-inputs">
+                                        <input type="text" size={40} />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>是否為驚喜包</p></div>
+                                    <div className="contact-inputs">
+                                        <input type="text" size={40} placeholder="Y/N" />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>人物設定</p></div>
+                                    <div className="contact-inputs">
+                                        <input type="text" size={40} />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>服裝設定</p></div>
+                                    <div className="contact-inputs">
+                                        <input type="text" size={40} />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>其他詳細需求</p></div>
+                                    <div className="contact-inputs">
+                                        <textarea type="text" rows={10} cols={33} />
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                        <button className="c-copy" onClick={handleCopy}>COPY</button>
+                        <div className="connection">
+                            <button><a href="#">CONTACT</a></button>
+                            <button><a href="#">SCHEDULE</a></button>
+                        </div>
 
-                    {/* 隱藏 textarea 用於複製 */}
-                    <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
+                        {/* 隱藏 textarea 用於複製 */}
+                        <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
+                    </div>
                 </div>
-            </div>
-
+            </main>
             <footer><p>2025. © all rights reserved.</p></footer>
 
         </>
