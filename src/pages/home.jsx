@@ -2,8 +2,9 @@ import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Draggable } from "gsap/Draggable";
-import { CustomEase } from "gsap/CustomEase";
 import Lenis from "@studio-freight/lenis";
+import $ from "jquery";
+
 import '../scss/home.scss';
 
 import home1 from '../images/home1.avif';
@@ -37,10 +38,8 @@ import notice10 from '../images/23.png';
 import notice11 from '../images/26.png';
 
 
-gsap.registerPlugin(Draggable, ScrollTrigger, CustomEase);
-CustomEase.create("projectExpand", "0.25, 0.1, 0.25, 1.05");
-CustomEase.create("projectCollapse", "0.36, 0.07, 0.19, 0.97");
-CustomEase.create("textReveal", "0.25, 1, 0.5, 1");
+
+gsap.registerPlugin(Draggable, ScrollTrigger);
 
 // works-照片
 const worksimgs = [
@@ -79,6 +78,20 @@ const itemsimgs = [
 ];
 
 const Home = () => {
+
+    // navbar
+    useEffect(() => {
+        $('.hamburger').on("click", function () {
+            console.log("click");
+            $(this).toggleClass('is-active');
+            $('.menu').toggleClass('show');
+        });
+
+        // 卸載元件時，移除事件監聽器，避免記憶體洩漏
+        return () => {
+            $('.hamburger').off("click");
+        };
+    }, []);
 
     // 封面 ---------------------------------------
     const herocontentRef = useRef(null);
@@ -227,141 +240,48 @@ const Home = () => {
 
     // item區 ---------------------------------------
     const [displayImg, setDisplayImg] = useState(itemsimgs[0]?.Imgline || "");
-    const [openItem, setOpenItem] = useState(null);       // 目標要開的項目
-    const [renderedItem, setRenderedItem] = useState(null); // DOM 實際渲染的項目
-    const [isAnimating, setIsAnimating] = useState(false); // 防止動畫重疊
-    const containerRefs = useRef({});
-    const textRefs = useRef({});
-    const handleClick = (id) => {
-        if (isAnimating) return;
-        setIsAnimating(true);
+    const [renderedItem, setRenderedItem] = useState(null); // 目前展開的 item
+    const contentRefs = useRef({});
+    const imgRef = useRef(null); // 左邊圖片的 ref
 
-        if (openItem === id) { // 點同一個 → 收起
-            animateClose(id, () => {
-                setOpenItem(null);
-                setIsAnimating(false);
-            });
-        } else if (openItem) { // 點其他 → 先關掉舊的再開新
-            animateClose(openItem, () => {
-                setOpenItem(id);
-                setRenderedItem(id); // 立即掛上 DOM
-            });
-        } else {  // 沒開啟的 → 直接打開
-            setOpenItem(id);
-            setRenderedItem(id); // 立即掛上 DOM
-        }
-    };
-    const animateClose = (id, callback) => {
-        const el = containerRefs.current[id];
-        if (!el) {
-            if (callback) callback();
-            return;
-        }
-
-        // 先讀取目前高度
-        const currentHeight = el.offsetHeight;
-
-        gsap.fromTo(
-            el,
-            { height: currentHeight, opacity: 1 },
-            {
+    const toggleItem = (id, imgSrc) => {
+        if (renderedItem === id) {
+            // 如果再次點擊同一個 → 收合
+            gsap.to(contentRefs.current[id], {
                 height: 0,
-                opacity: 0,
                 duration: 0.5,
-                ease: "projectCollapse", // 可以改你原本的 projectCollapse
-                onComplete: () => {
-                    setRenderedItem(null); // 動畫結束後再移除 DOM
-                    if (callback) callback();
-                },
-            }
-        );
-    };
-    const handleClickOutside = (e) => {
-        if (!e.target.closest(".item") && openItem) {
-            setIsAnimating(true);
-            animateClose(openItem, () => {
-                setOpenItem(null);
-                setIsAnimating(false);
+                ease: "power2.inOut",
             });
-        }
-    };
-    useEffect(() => {
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
-    }, [openItem]);
-    useEffect(() => { // 當 DOM 渲染完成後再執行開啟動畫
-        if (renderedItem) {
-            const el = containerRefs.current[renderedItem];
-            if (!el) return;
-
+            setRenderedItem(null);
+        } else {
+            // 先收合舊的
+            if (renderedItem && contentRefs.current[renderedItem]) {
+                gsap.to(contentRefs.current[renderedItem], {
+                    height: 0,
+                    duration: 0.5,
+                    ease: "power2.inOut",
+                });
+            }
+            // 展開新的
+            setRenderedItem(id);
             gsap.fromTo(
-                el,
-                { height: 0, opacity: 0 },
-                { height: "auto", opacity: 1, duration: 0.6, ease: "projectExpand" }
+                contentRefs.current[id],
+                { height: 0 },
+                { height: "auto", duration: 0.5, ease: "power2.inOut" }
             );
-
-            const texts = textRefs.current[renderedItem]?.querySelectorAll(".reveal-text");
-            if (texts) {
-                gsap.fromTo(
-                    texts,
-                    { y: 20, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        stagger: 0.1,
-                        duration: 0.6,
-                        ease: "textReveal",
-                        delay: 0.2,
-                        onComplete: () => setIsAnimating(false), // 動畫結束可再次點擊
-                    }
-                );
-            } else {
-                setIsAnimating(false);
-            }
-        }
-    }, [renderedItem]);
-    const [show, setShow] = useState(false); //item-鼠標
-    const [hoverItem, setHoverItem] = useState(); // 取當前hover的item
-    const [activeItemId, setActiveItemId] = useState(null); // 當前開啟的項目
-    const itemimgRef = useRef(null);
-
-    useLayoutEffect(() => {
-        if (!itemimgRef.current) return;
-
-        const ctx = gsap.context(() => {
-            if (show) {
-                gsap.to(itemimgRef.current, {
-                    autoAlpha: 1,
-                    scale: 1,
+            // 點擊時固定左邊大圖
+            gsap.fromTo(
+                imgRef.current,
+                { opacity: 0 },
+                {
+                    opacity: 1,
                     duration: 0.6,
-                    ease: "projectExpand",
-                });
-            } else {
-                gsap.to(itemimgRef.current, {
-                    autoAlpha: 0,
-                    scale: 0.8,
-                    duration: 0.4,
-                    ease: "projectCollapse",
-                });
-            }
-        });
-
-        return () => ctx.revert();
-    }, [show]);
-
-
-    const itemMouseMove = (e) => {
-        if (itemimgRef.current) {
-            gsap.to(itemimgRef.current, {
-                x: e.clientX + 5,
-                // x: window.innerWidth - 200,
-                y: e.clientY + 20,
-                duration: 0.4,
-                ease: "power3.out",
-            });
+                    ease: "power2.out",
+                    onStart: () => setDisplayImg(imgSrc),
+                }
+            );
         }
     };
-
 
     // process區 ---------------------------------------
     const processRef = useRef(null);
@@ -458,6 +378,7 @@ const Home = () => {
             requestAnimationFrameId = null;
         }
     };
+
 
     // contect區 ---------------------------------------
     const formRef = useRef(null);
@@ -566,6 +487,12 @@ const Home = () => {
 
             {/* menu */}
             <nav className="navbar" ref={navbarRef}>
+                <button className="hamburger">
+                    <span className="bar"></span>
+                    <span className="bar"></span>
+                    <span className="bar"></span>
+                </button>
+
                 <ul className="menu">
                     <li><a onClick={(e) => { e.preventDefault(); scrollTo(wrapperRef); }}>WORKS</a></li>
                     <li><a onClick={(e) => { e.preventDefault(); scrollTo(goitemRef); }}>ITEMS</a></li>
@@ -591,7 +518,7 @@ const Home = () => {
                 <div className="itemwrapper">
                     {/* 左邊固定圖片 */}
                     <div className="item-left">
-                        <img src={displayImg} alt="preview" />
+                        <img ref={imgRef} src={displayImg} alt="preview" />
                     </div>
 
                     {/* 右邊文字列表 */}
@@ -600,71 +527,43 @@ const Home = () => {
                             <div
                                 key={item.id}
                                 className="item-wrap"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleClick(item.id);
-
-                                    if (activeItemId === item.id) {
-                                        setActiveItemId(null); // 再次點擊已開啟 → 關閉
-                                    } else {
-                                        setActiveItemId(item.id); // 開啟新項目
-                                        setDisplayImg(item.ImgSrc); // 點擊後左邊圖片固定成該項目圖片
-                                    }
-                                }}
-                                onMouseMove={itemMouseMove}
                                 onMouseEnter={() => {
-                                    if (openItem) return;
-                                    setDisplayImg(item.Imgline);
+                                    if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
                                 }}
-                                onMouseLeave={() => setShow(false)} >
+                                onClick={() => toggleItem(item.id, item.ImgSrc)}
+                            >
                                 <div className="item-title">
                                     <p>{item.title}</p>
                                 </div>
-                                {renderedItem === item.id && (
-                                    <div className="item-content" ref={(el) => (containerRefs.current[item.id] = el)} >
-                                        <div className="item-contentwrap" ref={(el) => (textRefs.current[item.id] = el)} >
-                                            <div className="item-desc">
-                                                <p>{item.desc}</p>
-                                            </div>
-                                            <div className="item-price">
-                                                <p>{item.title}</p>
-                                            </div>
+
+                                <div
+                                    className="item-content"
+                                    ref={(el) => (contentRefs.current[item.id] = el)}
+                                    style={{ height: 0, overflow: "hidden" }}
+                                >
+                                    <div className="item-contentwrap">
+                                        <div className="item-desc">
+                                            <p>{item.desc}</p>
+                                        </div>
+                                        <div className="item-price">
+                                            <p>{item.title}</p>
                                         </div>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         ))}
                     </div>
-
-                    {/* 游標跟隨圖片 */}
-                    {/* <img
-                        ref={itemimgRef}
-                        src={hoverItem?.ImgSrc}
-                        alt=""
-                        className="item-img-follow"
-                        style={{
-                            position: "fixed",
-                            width: "180px",
-                            pointerEvents: "none",
-                            top: "-100px",
-                            left: "5%",
-                            height: "auto",
-                            zIndex: 2,
-                            opacity: 0,
-                            transform: "scale(0.8)",
-                        }}
-                    /> */}
                 </div>
-
             </div>
 
             {/* process */}
             <div className="processinner" ref={goprocessRef}>
+                <div className="title" >
+                    <h3><span>P</span><span>R</span><span>O</span><span>C</span>
+                        <span>E</span><span>S</span><span>S</span></h3></div>
                 <div className="process-wrap" ref={processRef}>
                     <div className="process-left">
-                        <div className="title" >
-                            <h3><span>P</span><span>R</span><span>O</span><span>C</span>
-                                <span>E</span><span>S</span><span>S</span></h3></div>
+
                         <div className="process-text">
                             <div className="process-info">
                                 <h2>01. 討論</h2>
@@ -815,7 +714,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <footer><p>© ⏹︎⏹︎⏹︎⏹︎⏹︎⏹︎. all rights reserved.</p></footer>
+            <footer><p>2025. © all rights reserved.</p></footer>
 
         </>
     );
