@@ -539,8 +539,12 @@ const Home = () => {
                                     onClick={() => toggleItem(item.id, item.ImgSrc)}
                                 >
                                     <div className="item-title">
-                                        <p>{item.title}</p>
-                                        <img src={arrow} alt="" />
+                                        <p data-hover={item.title}>{item.title}</p>
+                                        <div className="line">
+                                            <span className="bar"></span>
+                                            <span className="bar"></span>
+                                            <span className="bar"></span>
+                                        </div>
                                     </div>
 
                                     <div
@@ -667,11 +671,14 @@ const Home = () => {
                                 <h3><span>C</span><span>O</span><span>N</span>
                                     <span>T</span><span>A</span><span>C</span><span>T</span></h3>
                             </div>
-                            <p>- 依需求評估報價，都確認沒問題後才會進行排單<br />
-                                {/* - 報價後不進行委託可以直接說沒問題👌<br /> */}
-                                - 比較常在半夜回覆，有不想被打擾的可事先告知<br />
-                                - 排單順序以提供完整委託資料時間為準<br />
-                                - 個人因素報價所需時間較長(非常不好意思🙇)</p></div>
+                            <ul>
+                                <li>依需求評估報價，都確認沒問題後才會進行排單</li>
+                                <li>報價後不進行委託可以直接說沒問題👌</li>
+                                <li>比較常在半夜回覆，有不想被打擾的可事先告知</li>
+                                <li>排單順序以提供完整委託資料時間為準</li>
+                                <li>個人因素報價所需時間較長(非常不好意思🙇)</li>
+                            </ul>
+                        </div>
                         <form className="contact-form" ref={formRef}>
                             <ul className="contact-lists">
                                 <li className="contact-list">
@@ -714,8 +721,8 @@ const Home = () => {
                         </form>
                         <button className="c-copy" onClick={handleCopy}>COPY</button>
                         <div className="connection">
-                            <button><a href="#">CONTACT</a></button>
-                            <button><a href="#">SCHEDULE</a></button>
+                            <button><a href="">CONTACT</a></button>
+                            <button><a href="">SCHEDULE</a></button>
                         </div>
 
                         {/* 隱藏 textarea 用於複製 */}
