@@ -243,11 +243,11 @@ const Home = () => {
     }, []);
 
     // item區 ---------------------------------------
-    const [displayImg, setDisplayImg] = useState(itemsimgs[3]?.Imgline || "");
+    const [displayImg, setDisplayImg] = useState(itemsimgs[0]?.Imgline || "");
     const [renderedItem, setRenderedItem] = useState(null); // 目前展開的 item
     const contentRefs = useRef({});
     const imgRef = useRef(null); // 左邊圖片的 ref
-    /*
+    
         const toggleItem = (id, imgSrc) => {
             if (renderedItem === id) {
                 // 如果再次點擊同一個 → 收合
@@ -285,159 +285,9 @@ const Home = () => {
                     }
                 );
             }
-        };*/
-    const [isHoverDisabled, setIsHoverDisabled] = useState(false);
-    const bgImgRef = useRef(null); // 背景圖片
+        };
 
-    const handleMouseEnter = (item) => {
-        if (isHoverDisabled || renderedItem) return; // 如果被禁用或有展開的項目，不執行 hover
 
-        // 設置背景圖片為當前顯示的圖片
-        if (bgImgRef.current) {
-            bgImgRef.current.src = displayImg;
-        }
-
-        // 設置前景圖片為新圖片
-        if (imgRef.current) {
-            imgRef.current.src = item.Imgline;
-        }
-
-        // GSAP 剪裁動畫：從右到左顯示
-        gsap.fromTo(imgRef.current,
-            {
-                clipPath: "inset(0 100% 0 0)" // 初始狀態：完全被右邊遮蔽
-            },
-            {
-                clipPath: "inset(0 0% 0 0)", // 結束狀態：完全顯示
-                duration: 0.6,
-                ease: "power2.out",
-                onComplete: () => {
-                    // 動畫完成後更新背景圖片和狀態
-                    setDisplayImg(item.Imgline);
-                    if (bgImgRef.current) {
-                        bgImgRef.current.src = item.Imgline;
-                    }
-                }
-            }
-        );
-    };
-
-    const handleMouseLeave = () => {
-        if (isHoverDisabled || renderedItem) return;
-
-        // 回到預設圖片
-        const defaultImg = itemsimgs[3]?.Imgline || "";
-
-        if (displayImg !== defaultImg) {
-            // 設置背景為當前圖片
-            if (bgImgRef.current) {
-                bgImgRef.current.src = displayImg;
-            }
-
-            // 設置前景為預設圖片
-            if (imgRef.current) {
-                imgRef.current.src = defaultImg;
-            }
-
-            // 剪裁動畫
-            gsap.fromTo(imgRef.current,
-                {
-                    clipPath: "inset(0 100% 0 0)"
-                },
-                {
-                    clipPath: "inset(0 0% 0 0)",
-                    duration: 0.6,
-                    ease: "power2.out",
-                    onComplete: () => {
-                        setDisplayImg(defaultImg);
-                        if (bgImgRef.current) {
-                            bgImgRef.current.src = defaultImg;
-                        }
-                    }
-                }
-            );
-        }
-    };
-
-    const toggleItem = (id, imgSrc) => {
-        if (renderedItem === id) {
-            // 收合
-            gsap.to(contentRefs.current[id], {
-                height: 0,
-                duration: 0.5,
-                ease: "power2.inOut",
-            });
-            setRenderedItem(null);
-            setIsHoverDisabled(false); // 重新啟用 hover
-        } else {
-            // 先收合舊的
-            if (renderedItem && contentRefs.current[renderedItem]) {
-                gsap.to(contentRefs.current[renderedItem], {
-                    height: 0,
-                    duration: 0.5,
-                    ease: "power2.inOut",
-                });
-            }
-
-            // 展開新的
-            setRenderedItem(id);
-            setIsHoverDisabled(true); // 禁用 hover
-
-            gsap.fromTo(
-                contentRefs.current[id],
-                { height: 0 },
-                { height: "auto", duration: 0.5, ease: "power2.inOut" }
-            );
-
-            // 圖片切換動畫
-            if (displayImg !== imgSrc) {
-                // 設置背景圖片
-                if (bgImgRef.current) {
-                    bgImgRef.current.src = displayImg;
-                }
-
-                // 設置前景圖片
-                if (imgRef.current) {
-                    imgRef.current.src = imgSrc;
-                }
-
-                // 剪裁切換動畫
-                gsap.fromTo(imgRef.current,
-                    {
-                        clipPath: "inset(0 0 0 100%)"
-                    },
-                    {
-                        clipPath: "inset(0 0 0 0%)",
-                        duration: 0.8,
-                        ease: "power2.out",
-                        onComplete: () => {
-                            setDisplayImg(imgSrc);
-                            if (bgImgRef.current) {
-                                bgImgRef.current.src = imgSrc;
-                            }
-                        }
-                    }
-                );
-            }
-        }
-    };
-
-    useEffect(() => {
-        gsap.fromTo(".item-left",
-            { x:'100%',y: "-90vh" }, 
-            {
-                x: 0,
-                y: 0, // 回到 CSS 原本的位置
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".itemsinner",
-                    start: "top 70%", // 當 space 的底部到達視窗 80% 高度時開始
-                    end: "top 10%",    // 滑到更上面時結束
-                    scrub: true,         // 跟著滾輪動態推動
-                },
-            }
-        );
-    }, []);
     // process區 ---------------------------------------
     const processRef = useRef(null);
     useEffect(() => {
@@ -560,7 +410,7 @@ const Home = () => {
         textarea.value = textToCopy;
         textarea.select();
         document.execCommand("copy");
-        alert("表單已複製");
+        alert("表單資料已複製到剪貼簿！");
     };
 
     // 共用區 ---------------------------------------
@@ -574,7 +424,7 @@ const Home = () => {
             ease: "power3.out",
             scrollTrigger: {
                 trigger: section,       // 每個區塊自己觸發
-                start: "top 85%",     
+                start: "top 80%",       // 區塊進入螢幕 70% 時
                 toggleActions: "play none none none",
             }
         });
@@ -667,8 +517,6 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className="space"></div>
-
                 {/* item */}
                 <div className="itemsinner" ref={goitemRef}>
                     <div className="title" >
@@ -677,9 +525,8 @@ const Home = () => {
                         {/* 左邊固定圖片 */}
                         <div className="item-left">
                             <div className="img-wrapper">
-                                <img ref={bgImgRef} src={displayImg} alt="background" className="img-layer bg-img" />
-                                {/* 前景圖片 - 用於剪裁動畫 */}
-                                <img ref={imgRef} src={displayImg} alt="preview" className="img-layer front-img" />
+                                {/* <img ref={prevImgRef} src={prevImg} alt="previous" className="img-layer" /> */}
+                                <img ref={imgRef} src={displayImg} alt="preview" className="img-layer" />
                             </div>
                         </div>
 
@@ -689,13 +536,10 @@ const Home = () => {
                                 <div
                                     key={item.id}
                                     className="item-wrap"
-                                    /* onMouseEnter={() => {
+                                     onMouseEnter={() => {
                                          if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
                                      }}
-                                     onClick={() => toggleItem(item.id, item.ImgSrc)}*/
-                                    onMouseEnter={() => handleMouseEnter(item)}
-                                    onMouseLeave={handleMouseLeave}
-                                    onClick={() => toggleItem(item.id, item.ImgSrc)}
+                                     onClick={() => toggleItem(item.id, item.ImgSrc)}
                                 >
                                     <div className="item-title">
                                         <p data-hover={item.title}>{item.title}</p>
@@ -893,7 +737,7 @@ const Home = () => {
             <div className="outlink">
                 <a href="" class="link link--alt">
                     <svg viewBox='0 0 200 200' width='200' height='200' xmlns='http://www.w3.org/2000/svg' class="link__svg" aria-labelledby="link2-title link2-desc">
-                        <title id="link2-title">Click here to contact</title>
+                        <title id="link2-title">Click here to watch more works</title>
                         {/* <desc id="link2-desc">A rotating link with text placed around a circle, with a cloud/flower shape around it, and a smiley face inside</desc> */}
 
                         <path id="link-circle-alt" class="link__path" d="M 35, 100 a 65,65 0 1,1 130,0 a 65,65 0 1,1 -130,0" stroke="none" fill="none" />
@@ -909,7 +753,7 @@ const Home = () => {
 
                         <text class="link__text">
                             <textPath href="#link-circle-alt" stroke="none">
-                                •　Click　here　to　watch　more　works　•Thank
+                                • Click here to watch more works • thx
                             </textPath>
                         </text>
                     </svg>

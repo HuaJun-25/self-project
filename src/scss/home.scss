@@ -243,6 +243,11 @@ body {
     }
 }
 
+.space {
+    width: 100%;
+    height: 80vh;
+}
+
 // items
 .itemsinner {
     width: 100%;
@@ -307,8 +312,8 @@ body {
             margin-top: 2rem;
             height: 500px;
             width: 30vw;
-            overflow: hidden;
-            border-radius: 200px 200px 10px 10px;
+            // overflow: hidden;
+            // border-radius: 200px 200px 10px 10px;
 
             @media (max-width:680px) {
                 width: 100%;
@@ -328,16 +333,29 @@ body {
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
+                border-radius: 200px 200px 10px 10px;
+
+                .img-layer {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+
+                    &.bg-img {
+                        z-index: 1;
+                    }
+
+                    &.front-img {
+                        z-index: 2;
+                        clip-path: inset(0 0% 0 0);
+                        /* 預設完全顯示 */
+                    }
+                }
             }
 
-            .img-layer {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+
         }
 
         .item-right {
