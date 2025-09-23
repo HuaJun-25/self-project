@@ -110,9 +110,9 @@ body {
 
         li {
             a {
-                color: #eee;
+                color: #212121;
                 font-weight: 600;
-                mix-blend-mode: difference;
+                // mix-blend-mode: difference;
                 font-family: "EB Garamond", serif;
                 position: relative;
                 margin-bottom: 1rem;
@@ -121,10 +121,11 @@ body {
                 &::after {
                     content: "";
                     position: absolute;
+                    color: #212121;
                     left: 0;
-                    bottom: 0;
+                    bottom: 7px;
                     width: 100%;
-                    height: 1.5px;
+                    height: 10px;
                     background: currentColor;
                     transform: scaleX(0);
                     transform-origin: left;
@@ -307,7 +308,7 @@ body {
             height: 500px;
             width: 30vw;
             overflow: hidden;
-            border-radius: 100px;
+            border-radius: 200px 200px 10px 10px;
 
             @media (max-width:680px) {
                 width: 100%;
@@ -321,12 +322,28 @@ body {
                 object-fit: cover;
                 object-position: center;
             }
+
+            .img-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .img-layer {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
 
         .item-right {
             flex: 1;
             padding: 0 2rem;
-            margin-top: 10rem;
+            margin-top: 30vh;
 
             @media (max-width:680px) {
                 margin-top: .5rem;
@@ -334,6 +351,8 @@ body {
             }
 
             .item-wrap {
+                border-top: 2px solid #212121;
+
                 .item-title {
                     font-size: 1.5rem;
                     font-weight: 700;
@@ -344,9 +363,10 @@ body {
                     justify-content: space-between;
                     align-items: center;
                     overflow: hidden;
-                    // padding-top: 1rem;
+                    margin-top: 0.8rem;
                     position: relative;
 
+                    /*
                     &::after {
                         content: '';
                         background-image: url(../images/line.svg);
@@ -357,7 +377,7 @@ body {
                         background-repeat: no-repeat;
                         top: 42px;
                         left: -25px;
-                    }
+                    }*/
 
                     p {
                         // padding-top: 1rem;
@@ -367,7 +387,7 @@ body {
 
                         &:before {
                             position: absolute;
-                            top: 102%;
+                            top: 103%;
                             content: attr(data-hover);
                             font-weight: 700;
                             transform: translate3d(0, 0, 0);
@@ -429,6 +449,10 @@ body {
                             animation: shake 2s infinite;
                         }
                     }
+                }
+
+                &:last-child {
+                    border-bottom: 2px solid #212121;
                 }
             }
         }
@@ -883,7 +907,7 @@ body {
                 border-radius: 99px;
                 background-color: transparent;
                 cursor: pointer;
-                border: 1.5px solid #212121;
+                border: 1px solid #212121;
 
                 a {
                     overflow: hidden;

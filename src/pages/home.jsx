@@ -247,45 +247,46 @@ const Home = () => {
     const [renderedItem, setRenderedItem] = useState(null); // 目前展開的 item
     const contentRefs = useRef({});
     const imgRef = useRef(null); // 左邊圖片的 ref
-
-    const toggleItem = (id, imgSrc) => {
-        if (renderedItem === id) {
-            // 如果再次點擊同一個 → 收合
-            gsap.to(contentRefs.current[id], {
-                height: 0,
-                duration: 0.5,
-                ease: "power2.inOut",
-            });
-            setRenderedItem(null);
-        } else {
-            // 先收合舊的
-            if (renderedItem && contentRefs.current[renderedItem]) {
-                gsap.to(contentRefs.current[renderedItem], {
+    
+        const toggleItem = (id, imgSrc) => {
+            if (renderedItem === id) {
+                // 如果再次點擊同一個 → 收合
+                gsap.to(contentRefs.current[id], {
                     height: 0,
                     duration: 0.5,
                     ease: "power2.inOut",
                 });
-            }
-            // 展開新的
-            setRenderedItem(id);
-            gsap.fromTo(
-                contentRefs.current[id],
-                { height: 0 },
-                { height: "auto", duration: 0.5, ease: "power2.inOut" }
-            );
-            // 點擊時固定左邊大圖
-            gsap.fromTo(
-                imgRef.current,
-                { opacity: 0.6 },
-                {
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power2.out",
-                    onStart: () => setDisplayImg(imgSrc),
+                setRenderedItem(null);
+            } else {
+                // 先收合舊的
+                if (renderedItem && contentRefs.current[renderedItem]) {
+                    gsap.to(contentRefs.current[renderedItem], {
+                        height: 0,
+                        duration: 0.5,
+                        ease: "power2.inOut",
+                    });
                 }
-            );
-        }
-    };
+                // 展開新的
+                setRenderedItem(id);
+                gsap.fromTo(
+                    contentRefs.current[id],
+                    { height: 0 },
+                    { height: "auto", duration: 0.5, ease: "power2.inOut" }
+                );
+                // 點擊時固定左邊大圖
+                gsap.fromTo(
+                    imgRef.current,
+                    { opacity: 0.6 },
+                    {
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.out",
+                        onStart: () => setDisplayImg(imgSrc),
+                    }
+                );
+            }
+        };
+
 
     // process區 ---------------------------------------
     const processRef = useRef(null);
@@ -523,7 +524,10 @@ const Home = () => {
                     <div className="itemwrapper">
                         {/* 左邊固定圖片 */}
                         <div className="item-left">
-                            <img ref={imgRef} src={displayImg} alt="preview" />
+                            <div className="img-wrapper">
+                                {/* <img ref={prevImgRef} src={prevImg} alt="previous" className="img-layer" /> */}
+                                <img ref={imgRef} src={displayImg} alt="preview" className="img-layer" />
+                            </div>
                         </div>
 
                         {/* 右邊文字列表 */}
@@ -532,10 +536,10 @@ const Home = () => {
                                 <div
                                     key={item.id}
                                     className="item-wrap"
-                                    onMouseEnter={() => {
-                                        if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
-                                    }}
-                                    onClick={() => toggleItem(item.id, item.ImgSrc)}
+                                     onMouseEnter={() => {
+                                         if (!renderedItem) setDisplayImg(item.Imgline); // hover 顯示 Imgline，但只有在沒點開時
+                                     }}
+                                     onClick={() => toggleItem(item.id, item.ImgSrc)}
                                 >
                                     <div className="item-title">
                                         <p data-hover={item.title}>{item.title}</p>
