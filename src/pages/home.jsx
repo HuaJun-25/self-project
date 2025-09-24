@@ -36,6 +36,11 @@ import notice8 from '../images/16.avif';
 import notice9 from '../images/17.png';
 import notice10 from '../images/23.png';
 import notice11 from '../images/26.png';
+import ani01 from '../images/ani01.gif';
+import ani02 from '../images/ani02.gif';
+import space01 from '../images/deco02.png';
+import space02 from '../images/deco01.avif';
+
 
 
 
@@ -423,8 +428,10 @@ const Home = () => {
     };
 
     useEffect(() => {
+        /*
+        const centerX = window.innerWidth / 3;
         gsap.fromTo(".item-left",
-            { x:'100%',y: "-90vh" }, 
+            {x: centerX, y: "-90vh"},
             {
                 x: 0,
                 y: 0, // 回到 CSS 原本的位置
@@ -436,7 +443,24 @@ const Home = () => {
                     scrub: true,         // 跟著滾輪動態推動
                 },
             }
-        );
+        );*/
+        const mm = gsap.matchMedia();
+
+        mm.add("(min-width: 1442px)", () => {
+            gsap.fromTo(".item-left",
+                { x: "24vw", y: "-90vh" },
+                { x: 0, y: 0, scrub: true, scrollTrigger: { trigger: ".itemsinner", start: "top 70%", end: "top 10%", scrub: true } }
+            );
+        });
+
+        mm.add("(max-width: 1441px)", () => {
+            gsap.fromTo(".item-left",
+                { x: "33vw", y: "-90vh" },
+                { x: 0, y: 0, scrub: true, scrollTrigger: { trigger: ".itemsinner", start: "top 70%", end: "top 5%", scrub: true } }
+            );
+        });
+
+        return () => mm.revert();
     }, []);
     // process區 ---------------------------------------
     const processRef = useRef(null);
@@ -538,6 +562,7 @@ const Home = () => {
     // contect區 ---------------------------------------
     const formRef = useRef(null);
     const textareaRef = useRef(null);
+    const [copied, setCopied] = useState(false);
 
     const handleCopy = () => { // 表單複製
         const formEl = formRef.current;
@@ -548,7 +573,7 @@ const Home = () => {
 
         items.forEach((li) => {
             const label = li.querySelector(".contact-text p")?.innerText || "";
-            const input = li.querySelector("input, textarea");
+            const input = li.querySelector("input, textarea, select");
             const value = input?.value || "";
             lines.push(`${label}: ${value}`);
         });
@@ -560,7 +585,9 @@ const Home = () => {
         textarea.value = textToCopy;
         textarea.select();
         document.execCommand("copy");
-        alert("表單已複製");
+        // alert("表單已複製");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500); // 1.5 秒後隱藏
     };
 
     // 共用區 ---------------------------------------
@@ -574,7 +601,7 @@ const Home = () => {
             ease: "power3.out",
             scrollTrigger: {
                 trigger: section,       // 每個區塊自己觸發
-                start: "top 85%",     
+                start: "top 85%",
                 toggleActions: "play none none none",
             }
         });
@@ -608,6 +635,23 @@ const Home = () => {
             }
         );
     }, []);
+
+    // 彈窗
+    const [isOpen, setIsOpen] = useState(false);
+    const openBtnRef = useRef(null); // 開啟按鈕的 ref
+    const closeBtnRef = useRef(null); // 關閉按鈕的 ref
+    const openPopup = () => {
+        setIsOpen(true);
+        setTimeout(() => {
+            closeBtnRef.current?.focus(); // 聚焦到關閉按鈕
+        }, 0);
+    };
+    const closePopup = () => {
+        setIsOpen(false);
+        setTimeout(() => {
+            openBtnRef.current?.focus(); // 聚焦回開啟按鈕
+        }, 0);
+    };
 
 
 
@@ -667,7 +711,13 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className="space"></div>
+                <div className="space">
+                    <img className="ani1" src={ani01} alt="gif" />
+                    <img className="ani2" src={ani02} alt="gif" />
+                    <img className="ani3" src={ani02} alt="gif" />
+                    <img className="sp1" src={space01} alt="img" />
+                    <img className="sp2" src={space02} alt="img" />
+                </div>
 
                 {/* item */}
                 <div className="itemsinner" ref={goitemRef}>
@@ -848,9 +898,22 @@ const Home = () => {
                                     </div>
                                 </li>
                                 <li className="contact-list">
-                                    <div className="contact-text"><p>項目</p></div>
+                                    <div className="contact-text"><p>聯絡方式</p></div>
                                     <div className="contact-inputs">
                                         <input type="text" size={40} />
+                                    </div>
+                                </li>
+                                <li className="contact-list">
+                                    <div className="contact-text"><p>項目</p></div>
+                                    <div className="contact-inputs">
+                                        {/* <input type="text" size={40} /> */}
+                                        <select>
+                                            <option value="雙人插圖">雙人插圖</option>
+                                            <option value="全身插圖">全身插圖</option>
+                                            <option value="黑白頁漫">黑白頁漫</option>
+                                            <option value="滿版插圖">滿版插圖</option>
+                                            <option value="">自提議</option>
+                                        </select>
                                     </div>
                                 </li>
                                 <li className="contact-list">
@@ -859,7 +922,7 @@ const Home = () => {
                                         <input type="text" size={40} placeholder="Y/N" />
                                     </div>
                                 </li>
-                                <li className="contact-list">
+                                {/* <li className="contact-list">
                                     <div className="contact-text"><p>人物設定</p></div>
                                     <div className="contact-inputs">
                                         <input type="text" size={40} />
@@ -870,20 +933,79 @@ const Home = () => {
                                     <div className="contact-inputs">
                                         <input type="text" size={40} />
                                     </div>
-                                </li>
+                                </li> */}
                                 <li className="contact-list">
                                     <div className="contact-text"><p>其他詳細需求</p></div>
                                     <div className="contact-inputs">
-                                        <textarea type="text" rows={10} cols={33} />
+                                        <textarea type="text" rows={10} cols={33} placeholder="人物/服裝設定" />
                                     </div>
                                 </li>
                             </ul>
                         </form>
                         <button className="c-copy" onClick={handleCopy}>CLICK TO COPY</button>
+                        {copied && (
+                            <span className="copy-txt">已複製</span>
+                        )}
                         <div className="connection">
-                            <button><a href=""><p data-hover="CONTACT">CONTACT</p></a></button>
-                            <button><a href=""><p data-hover="SCHEDULE">SCHEDULE</p></a></button>
+                            <button><a ><p data-hover="MORE WORKS">MORE WORKS</p></a></button>
+                            <button
+                                ref={openBtnRef}
+                                onClick={openPopup}
+                                aria-controls="myPopup"
+                                aria-label="Open popup"
+                            ><a><p data-hover="SCHEDULE">SCHEDULE</p></a></button>
                         </div>
+                        {isOpen && (
+                            <div className="popup"
+                                aria-hidden={!isOpen}
+                                onClick={(e) => {
+                                    if (e.target === e.currentTarget) closePopup(); // 點背景關閉
+                                }} >
+                                <div className="wrapper" aria-labelledby="popupTitle" aria-describedby="popupText" aria-modal="true" >
+
+                                    <button className="closePopup" ref={closeBtnRef} onClick={closePopup}>
+                                        <span className="bar"></span>
+                                    </button>
+                                    <div>
+                                        <h3>SCHEDULE</h3>
+                                    </div>
+                                    <div className="s-tablewrap">
+                                        <div class="s-table">
+                                            <div className="t-header">
+                                                <div className="t-item">NAME</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">ITEM</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">★</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">DEADLINE</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">LINK</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">已付款</div>
+                                            </div>
+                                            <div className="t-list">
+                                                <div className="t-item">測試</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">測試</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">測試</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item"><span>30-10-25</span></div>
+                                                <div className="">︙</div>
+                                                <div className="t-item">■</div>
+                                                <div className="">︙</div>
+                                                <div className="t-item"><span>✓</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="s-up">
+                                        <p>更新時間: 25-09-24</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        )}
 
                         {/* 隱藏 textarea 用於複製 */}
                         <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
@@ -909,12 +1031,13 @@ const Home = () => {
 
                         <text class="link__text">
                             <textPath href="#link-circle-alt" stroke="none">
-                                •　Click　here　to　watch　more　works　•Thank
+                                •　Click　here　to　contact　•　Thank
                             </textPath>
                         </text>
                     </svg>
                 </a>
             </div>
+
             <footer><p>2025. © all rights reserved.</p></footer>
 
         </>
