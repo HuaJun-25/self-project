@@ -288,7 +288,7 @@ body {
         position: absolute;
         width: 400px;
         height: 300px;
-        bottom: 30px;
+        bottom: 25px;
         right: 30px;
         transform: rotate(5deg);
     }
@@ -828,6 +828,11 @@ body {
         padding-top: 15vh;
         text-align: center;
 
+
+        @media (max-width:420px) {
+            gap: 10px;
+        }
+
         .contact-desc {
             display: flex;
             flex-direction: column;
@@ -929,9 +934,10 @@ body {
                             border-bottom: 1px solid #555;
                             padding-bottom: .5rem;
 
-                            option{
+                            option {
                                 background-color: #FAF8F4;
                             }
+
                             &:focus {
                                 outline: none;
                                 box-shadow: none;
@@ -1048,8 +1054,19 @@ body {
             }
         }
 
-        @media (max-width:420px) {
-            gap: 10px;
+        img {
+            position: absolute;
+            bottom: 0;
+            width: 400px;
+            left: 10%;
+
+            @media (max-width:1440px) {
+                left: 2%;
+            }
+
+            @media (max-width:1200px) {
+                display: none;
+            }
         }
     }
 }

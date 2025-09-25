@@ -40,6 +40,8 @@ import ani01 from '../images/ani01.gif';
 import ani02 from '../images/ani02.gif';
 import space01 from '../images/deco02.png';
 import space02 from '../images/deco01.avif';
+import space03 from '../images/char03.png';
+
 
 
 
@@ -428,24 +430,7 @@ const Home = () => {
     };
 
     useEffect(() => {
-        /*
-        const centerX = window.innerWidth / 3;
-        gsap.fromTo(".item-left",
-            {x: centerX, y: "-90vh"},
-            {
-                x: 0,
-                y: 0, // 回到 CSS 原本的位置
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".itemsinner",
-                    start: "top 70%", // 當 space 的底部到達視窗 80% 高度時開始
-                    end: "top 10%",    // 滑到更上面時結束
-                    scrub: true,         // 跟著滾輪動態推動
-                },
-            }
-        );*/
         const mm = gsap.matchMedia();
-
         mm.add("(min-width: 1442px)", () => {
             gsap.fromTo(".item-left",
                 { x: "24vw", y: "-90vh" },
@@ -713,10 +698,14 @@ const Home = () => {
 
                 <div className="space">
                     <img className="ani1" src={ani01} alt="gif" />
-                    <img className="ani2" src={ani02} alt="gif" />
-                    <img className="ani3" src={ani02} alt="gif" />
-                    <img className="sp1" src={space01} alt="img" />
-                    <img className="sp2" src={space02} alt="img" />
+                    <div className="space-one">
+                        <img className="ani2" src={ani02} alt="gif" />
+                        <img className="sp1" src={space01} alt="img" />
+                    </div>
+                    <div className="space-two">
+                        <img className="ani3" src={ani02} alt="gif" />
+                        <img className="sp2" src={space02} alt="img" />
+                    </div>
                 </div>
 
                 {/* item */}
@@ -873,9 +862,6 @@ const Home = () => {
                 {/* contact */}
                 <div className="contactinner" ref={gocontactRef}>
                     <div className="contact-wrap">
-                        <div className="contact-pic">
-
-                        </div>
                         <div className="contact-desc">
                             <div className="title" >
                                 <h3><span>C</span><span>O</span><span>N</span>
@@ -1006,7 +992,7 @@ const Home = () => {
                                 </div>
                             </div>
                         )}
-
+                        <div><img src={space03} alt="" /></div>
                         {/* 隱藏 textarea 用於複製 */}
                         <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
                     </div>
