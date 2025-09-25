@@ -638,6 +638,15 @@ const Home = () => {
         }, 0);
     };
 
+    // 禁右鍵
+    useEffect(() => {
+        const handleContextMenu = (e) => e.preventDefault();
+        document.addEventListener("contextmenu", handleContextMenu);
+        return () => {
+            document.removeEventListener("contextmenu", handleContextMenu);
+        };
+    }, []);
+
 
 
     return (
@@ -700,11 +709,11 @@ const Home = () => {
                     <img className="ani1" src={ani01} alt="gif" />
                     <div className="space-one">
                         <img className="ani2" src={ani02} alt="gif" />
-                        <img className="sp1" src={space01} alt="img" />
+                        <img className="sp1" src={space01} alt="character" draggable="false" />
                     </div>
                     <div className="space-two">
                         <img className="ani3" src={ani02} alt="gif" />
-                        <img className="sp2" src={space02} alt="img" />
+                        <img className="sp2" src={space02} alt="character" draggable="false" />
                     </div>
                 </div>
 
@@ -822,18 +831,19 @@ const Home = () => {
                 <div className="noticeinner" ref={gonoticeRef}>
                     <div onMouseMove={noticeMouseMove} className="notice-wrap">
                         <div ref={nplane1} className="notice-plane">
-                            <img src={notice7} alt="n-pic" />
-                            <img src={notice8} alt="n-pic" />
+                            <img src={notice7} alt="n-pic" draggable="false" />
+                            <img src={notice8} alt="n-pic" draggable="false" />
                         </div>
                         <div ref={nplane2} className="notice-plane">
-                            <img src={notice10} alt="n-pic" />
-                            <img src={notice5} alt="n-pic" />
-                            <img src={notice3} alt="n-pic" />
+                            <img src={notice10} alt="n-pic" draggable="false" />
+                            <img src={notice5} alt="n-pic" draggable="false" />
+                            <img src={notice3} alt="n-pic" draggable="false" />
                         </div>
                         <div ref={nplane3} className="notice-plane">
-                            <img src={notice1} alt="n-pic" />
-                            <img src={notice2} alt="n-pic" />
-                            <img src={notice6} alt="n-pic" />
+                            <img src={notice1} alt="n-pic" draggable="false" />
+                            <img src={notice2} alt="n-pic" draggable="false" />
+                            <img src={notice6} alt="n-pic" draggable="false" />
+                            <img src={notice11} alt="n-pic" draggable="false" />
                         </div>
                         <div className="notice-text">
                             <div className="title" >
@@ -992,7 +1002,7 @@ const Home = () => {
                                 </div>
                             </div>
                         )}
-                        <div><img src={space03} alt="" /></div>
+                        <div><img src={space03} alt="character" draggable="false" /></div>
                         {/* 隱藏 textarea 用於複製 */}
                         <textarea ref={textareaRef} style={{ position: "absolute", left: "-9999px" }} />
                     </div>
